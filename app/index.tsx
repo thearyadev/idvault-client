@@ -1,22 +1,17 @@
-import { Link } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import { Link, router } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { StyleSheet, Text, View, Pressable, Button } from "react-native";
 
 export default function AppHome() {
   return (
-    <View style={styles.container}>
-      <Text>Welcome to IDVault</Text>
+    <View>
+      <Text>Welcome to IDVault. This is the landing page.</Text>
       <StatusBar style="auto" />
-      <Link href="/home">Go to home!</Link>
+      <View>
+          <Button title="Go to homepage!" onPress={() => router.navigate("/home/home")}/>
+      </View>
     </View>
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+const styles = StyleSheet.create({},);
