@@ -28,6 +28,6 @@
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
   }
 }
