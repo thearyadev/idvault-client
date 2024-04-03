@@ -1,10 +1,16 @@
-import { Slot} from "expo-router";
+import Navbar from "components/navbar/navbar";
+import { Slot } from "expo-router";
 import { View } from "react-native";
 import { StyleSheet } from "react-native";
 export default function BaseLayout() {
-  return <View style={styles.container}>
-    <Slot />
-  </View>;
+  return (
+    <>
+      <View style={styles.container}>
+        <Slot />
+      </View>
+      <Navbar />
+    </>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -14,4 +20,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-})
+});
