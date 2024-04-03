@@ -10,7 +10,7 @@ export default function BaseLayout() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "#0C4D7D",
     alignItems: "center",
     justifyContent: "center",
   },
