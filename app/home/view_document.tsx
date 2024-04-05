@@ -4,7 +4,7 @@ import Content from "components/wrappers/content";
 export default function ViewDocument() {
   return (
     <Content>
-      <WhiteText>View Document</WhiteText>
+      <WhiteText>Add Document</WhiteText>
     </Content>
   );
 }
