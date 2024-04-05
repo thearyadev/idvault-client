@@ -34,7 +34,7 @@ export interface DriversLicense extends Document {
   driversLicenseNumber: string;
   dateOfBirth: string;
   class: string;
-  height: string;
+  height: number;
   sex: string;
   province: string;
   city: string;
