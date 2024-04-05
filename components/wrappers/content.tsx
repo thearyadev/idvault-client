@@ -1,9 +1,13 @@
 import { ReactNode } from "react";
-import { View } from "react-native";
+import { ImageBackground, View } from "react-native";
 import { StyleSheet } from "react-native";
 
 export default function Content({ children }: { children: ReactNode }) {
-  return <View style={styles.container}>{children}</View>;
+  return (
+    <ImageBackground source={require("assets/app_bg.png")} >
+      <View style={styles.container}>{children}</View>
+    </ImageBackground>
+  );
 }
 
 const styles = StyleSheet.create({
@@ -13,14 +17,7 @@ const styles = StyleSheet.create({
     paddingTop: 70,
     paddingLeft: 20,
     paddingRight: 20,
-    backgroundColor: "blue"
+    backgroundColor: "rgba(0, 0, 0, 0.30)"
   },
 });
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     backgroundColor: "blue",
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
-// });
+
