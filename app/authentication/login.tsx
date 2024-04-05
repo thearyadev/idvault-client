@@ -6,6 +6,8 @@ import { StyleSheet } from "react-native";
 import ButtonLarge from "components/buttons/button_large";
 import LinkText from "components/text/link";
 import { getToken, setUsersName } from "lib/asyncStorage";
+import Content from "components/wrappers/content";
+import { FontAwesome } from "@expo/vector-icons";
 
 export default function LoginScreen() {
   const [username, setUsername] = useState("");
@@ -27,46 +29,51 @@ export default function LoginScreen() {
     return <Redirect href="/home/home" />;
   }
   return (
-    <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Username"
-          onChangeText={setUsername}
-          style={styles.input}
-          autoCapitalize="none"
-        />
-        <TextInput
-          secureTextEntry={true}
-          placeholder="Password"
-          onChangeText={setPassword}
-          style={styles.input}
-        />
-        <LinkText
-          label="Forgot Password?"
-          style={styles.forgotPassword}
-          onPress={undefined} // go to password recovery
-        />
-      </View>
-      <ButtonLarge
-        label="Login"
-        onPress={() => {
-          login(username, password).then(() => {
-            getToken().then((stored_token) => {
-              userDetails(stored_token as string).then((user_details) => {
-                setTokenAuth(true);
-                setUsersName(user_details.name);
+    <Content>
+      <View style={styles.container}>
+        <View style={styles.iconContainer}>
+          <FontAwesome name="user-circle" size={130} color="white" />
+        </View>
+        <View style={styles.inputContainer}>
+          <TextInput
+            placeholder="Username"
+            onChangeText={setUsername}
+            style={styles.input}
+            autoCapitalize="none"
+            placeholderTextColor="black"
+          />
+          <TextInput
+            secureTextEntry={true}
+            placeholder="Password"
+            onChangeText={setPassword}
+            style={styles.input}
+            placeholderTextColor="black"
+          />
+          <LinkText
+            label="Forgot Password?"
+            style={styles.forgotPassword}
+            onPress={undefined} // go to password recovery
+          />
+        </View>
+        <ButtonLarge
+          label="Login"
+          onPress={() => {
+            login(username, password).then(() => {
+              getToken().then((stored_token) => {
+                userDetails(stored_token as string).then((user_details) => {
+                  setTokenAuth(true);
+                  setUsersName(user_details.name);
+                });
               });
             });
-          });
-        }}
-      />
-
-      <View style={styles.registerContainer}>
-        <Text style={styles.registerPrompt}>New to IDVault?</Text>
-
-        <LinkText label="Register" style={styles.registerPromptLink} />
+          }}
+        />
+        <View style={styles.registerContainer}>
+          <Text style={styles.registerPrompt}>New to IDVault?</Text>
+          <LinkText label="Register" style={styles.registerPromptLink} />
+        </View>
       </View>
-    </View>
+    </Content>
   );
 }
 
@@ -84,6 +91,8 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     padding: 15,
     backgroundColor: "white",
+    color: "black"
+    
   },
   inputContainer: {
     paddingBottom: 50,
@@ -105,4 +114,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 60,
   },
+  iconContainer: {
+    padding: 30
+  }
 });
