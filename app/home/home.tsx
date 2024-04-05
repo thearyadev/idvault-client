@@ -3,43 +3,25 @@ import { useEffect, useState } from "react";
 import { getUsersName } from "lib/asyncStorage";
 import { StyleSheet, View } from "react-native";
 import Content from "components/wrappers/content";
-import {
-  BirthCertificate,
-  DriversLicense,
-  Passport,
-} from "lib/types";
+import { BirthCertificate, DriversLicense, Passport } from "lib/types";
 import ButtonSquareWithIcon from "components/buttons/button_square";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native";
 import { DocTypes } from "lib/types";
+import { getAllDocuments } from "lib/api";
+import { getToken } from "lib/asyncStorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+AsyncStorage.clear();
+
+
 export default function AppHome() {
   const [name, setName] = useState("");
   const [documents, setDocuments] = useState<
     (Passport | BirthCertificate | DriversLicense)[]
-  >([
-    // @ts-ignore
-    {
-      documentId: 1,
-      documentType: "DriversLicense",
-    },
-    // @ts-ignore
-    {
-      documentId: 2,
-      documentType: "BirthCertificate",
-    },
-    // @ts-ignore
-    {
-      documentId: 3,
-      documentType: "Passport",
-    },
-    // @ts-ignore
-    {
-      documentId: 4,
-      documentType: "DriversLicense",
-    },
-  ]);
+  >([]);
 
   useEffect(() => {
     getUsersName().then((stored_name) => {
@@ -49,7 +31,16 @@ export default function AppHome() {
       }
       setName("Error");
     });
-  });
+
+    // get all documents
+    getToken().then((stored_token) => {
+      if (stored_token) {
+        getAllDocuments(stored_token).then((documents) => {
+          setDocuments(documents);
+        });
+      }
+    });
+  }, []);
 
   return (
     <Content>
@@ -58,6 +49,7 @@ export default function AppHome() {
       </View>
       <View style={styles.section}>
         <WhiteText style={styles.heading}>Your Documents</WhiteText>
+        <View style={styles.separator} />
         <View style={styles.yourDocuments}>
           <ScrollView horizontal style={styles.yourDocumentsScrollView}>
             {documents.length ? (
@@ -91,6 +83,8 @@ export default function AppHome() {
 
       <View style={styles.section}>
         <WhiteText style={styles.heading}>Add a New Document</WhiteText>
+
+        <View style={styles.separator} />
         <View style={styles.addDocumentContainer}>
           <ButtonSquareWithIcon
             label="Drivers License"
@@ -133,10 +127,8 @@ const styles = StyleSheet.create({
   heading: {
     fontSize: 20,
     paddingTop: 20,
-    paddingBottom: 20,
   },
   noDocumentsFoundText: {
-    tintColor: "gray",
     textAlign: "center",
   },
   addDocumentContainer: {
@@ -154,4 +146,11 @@ const styles = StyleSheet.create({
   yourDocumentsScrollView: {
     paddingBottom: 10,
   },
+  separator: {
+    height: 5,
+    width: "100%",
+    backgroundColor: "#10B3ED",
+    marginTop: 5,
+    marginBottom: 10,
+  }
 });

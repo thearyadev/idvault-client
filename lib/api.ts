@@ -1,4 +1,12 @@
-import { GenericDocument, Token, UserDetails } from "./types";
+import {
+  BirthCertificate,
+  DocumentsArray,
+  DriversLicense,
+  GenericDocument,
+  Passport,
+  Token,
+  UserDetails,
+} from "./types";
 import { setToken, setUsersName } from "./asyncStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 const API_URL: string = "http://192.168.1.160:3000"; // will be changed in production
@@ -41,17 +49,43 @@ export function getDocument(token: Token, documentId: number): GenericDocument {
   throw new Error("Not implemented");
 }
 
-export function getAllDocuments(token: Token): GenericDocument[] {
-  throw new Error("Not implemented");
+export async function getAllDocuments(token: Token): Promise<DocumentsArray> {
+  const request = await fetch(`${API_URL}/documents/document_list`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return (await request.json()) as DocumentsArray;
 }
 
 export function deleteDocument(token: Token, documentId: number): boolean {
   throw new Error("Not implemented");
 }
 
-export function createDocument(
+export async function createDocument(
   token: Token,
-  document: GenericDocument,
-): GenericDocument {
-  throw new Error("Not implemented");
+  document: Passport | BirthCertificate | DriversLicense,
+) {
+  const request = await fetch(
+    `${API_URL}/documents/add/${document.documentType}`,
+    {
+      method: "POST",
+      body: JSON.stringify(document),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  // unauthorized
+  if (request.status === 401) {
+    return Promise.reject("Unauthorized");
+  }
+  // bad request
+  if (request.status === 500) {
+    return Promise.reject("Bad request");
+  }
+  if (!request.ok) {
+    return Promise.reject("Failed to create document");
+  }
 }
