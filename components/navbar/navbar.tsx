@@ -15,11 +15,17 @@ const NavbarItem: React.FC<NavbarItemProps> = ({
   iconName,
   children,
 }) => {
-  const pathname = usePathname();
+  let pathname = usePathname();
+  if (
+    (pathname === "/home/view_document" || pathname === "/home/add_document") &&
+    path === "/home/home"
+  ) {
+    pathname = "/home/home";
+  }
   const isActive = pathname === path;
 
   return (
-    <Pressable onPress={() => router.navigate(path)}>
+    <Pressable onPress={() => router.replace(path)}>
       <View
         style={[
           style.navbarItem,
