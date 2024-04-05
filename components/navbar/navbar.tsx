@@ -29,7 +29,7 @@ const NavbarItem: React.FC<NavbarItemProps> = ({
       <View
         style={[
           style.navbarItem,
-          { backgroundColor: isActive ? "blue" : undefined },
+          { backgroundColor: isActive ? "#10B3ED" : undefined },
         ]}
       >
         {React.cloneElement(children as React.ReactElement<any>, {
