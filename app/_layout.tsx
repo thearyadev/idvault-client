@@ -4,10 +4,11 @@ import { StyleSheet } from "react-native";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import Navbar from "components/navbar/navbar";
+import { RootSiblingParent } from "react-native-root-siblings";
 
 export default function BaseLayout() {
   return (
-    <>
+    <RootSiblingParent>
       <Stack>
         <Stack.Screen
           name="authentication/login"
@@ -51,7 +52,7 @@ export default function BaseLayout() {
         <Stack.Screen name="home/add_document" options={{presentation: "modal", headerShown: false}}/>
       </Stack>
       <Navbar />
-    </>
+    </RootSiblingParent>
   );
 }
 
