@@ -1,14 +1,17 @@
 import WhiteText from "components/text/white_text";
 import { useState } from "react";
 import Content from "components/wrappers/content";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { DocTypes } from "lib/types";
 import { Button, ScrollViewBase, StyleSheet } from "react-native";
 import { TextInput, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import RNPickerSelect from "react-native-picker-select";
 import { ScrollView } from "react-native-gesture-handler";
-
+import ButtonLarge from "components/buttons/button_large";
+import { createDocument } from "lib/api";
+import { getToken } from "lib/asyncStorage";
+import Toast from "react-native-root-toast";
 type AddDocumentParams = {
   documentType: keyof typeof DocTypes;
 };
@@ -43,7 +46,7 @@ function DriversLicenseView() {
 
   return (
     <Content>
-      <WhiteText style={styles.heading}>Add Document</WhiteText>
+      <WhiteText style={styles.heading}>Add Drivers License</WhiteText>
 
       <View style={styles.formContainer}>
         <TextInput
@@ -54,31 +57,6 @@ function DriversLicenseView() {
           placeholderTextColor="black"
         />
 
-        <RNPickerSelect
-          onValueChange={(value) => setClassType(value)}
-          placeholder={{ label: "Select Class Type", value: null }}
-          style={{
-            inputIOS: {
-              fontSize: 16,
-              paddingVertical: 12,
-              paddingHorizontal: 10,
-              borderRadius: 10,
-              color: "black",
-              paddingRight: 30,
-              width: "100%",
-              backgroundColor: "white",
-            },
-          }}
-          items={[
-            { label: "G", value: "G" },
-            { label: "G1", value: "G1" },
-            { label: "G2", value: "G2" },
-            { label: "M", value: "M" },
-            { label: "M1", value: "M1" },
-            { label: "M2", value: "M2" },
-          ]}
-        />
-
         <TextInput
           style={styles.textInput}
           placeholder="Height (CM)"
@@ -87,26 +65,7 @@ function DriversLicenseView() {
           placeholderTextColor="black"
           keyboardType="number-pad"
         />
-        <RNPickerSelect
-          onValueChange={(value) => setSex(value)}
-          placeholder={{ label: "Sex", value: null }}
-          style={{
-            inputIOS: {
-              fontSize: 16,
-              paddingVertical: 12,
-              paddingHorizontal: 10,
-              borderRadius: 10,
-              color: "black",
-              paddingRight: 30,
-              width: "100%",
-              backgroundColor: "white",
-            },
-          }}
-          items={[
-            { label: "Female", value: "Female" },
-            { label: "Male", value: "Male" },
-          ]}
-        />
+
         <TextInput
           style={styles.textInput}
           placeholder="Province"
@@ -129,7 +88,7 @@ function DriversLicenseView() {
           value={address}
           onChangeText={setAddress}
           placeholderTextColor="black"
-          textContentType="fullStreetAddress"
+          textContentType="streetAddressLine1"
         />
         <TextInput
           style={styles.textInput}
@@ -139,6 +98,59 @@ function DriversLicenseView() {
           placeholderTextColor="black"
           textContentType="postalCode"
         />
+        <View
+          style={{
+            flexDirection: "row",
+            width: "100%",
+            justifyContent: "space-around",
+          }}
+        >
+          <RNPickerSelect
+            onValueChange={(value) => setClassType(value)}
+            placeholder={{ label: "Select Class Type", value: null }}
+            style={{
+              inputIOS: {
+                fontSize: 16,
+                paddingVertical: 12,
+                paddingHorizontal: 10,
+                borderRadius: 10,
+                color: "black",
+                paddingRight: 30,
+                width: "100%",
+                backgroundColor: "white",
+              },
+            }}
+            items={[
+              { label: "G", value: "G" },
+              { label: "G1", value: "G1" },
+              { label: "G2", value: "G2" },
+              { label: "M", value: "M" },
+              { label: "M1", value: "M1" },
+              { label: "M2", value: "M2" },
+            ]}
+          />
+          <RNPickerSelect
+            onValueChange={(value) => setSex(value)}
+            placeholder={{ label: "Sex", value: null }}
+            style={{
+              inputIOS: {
+                fontSize: 16,
+                paddingVertical: 12,
+                paddingHorizontal: 10,
+                borderRadius: 10,
+                color: "black",
+                paddingRight: 30,
+                width: "100%",
+                backgroundColor: "white",
+              },
+            }}
+            items={[
+              { label: "Female", value: "Female" },
+              { label: "Male", value: "Male" },
+            ]}
+          />
+        </View>
+
         <View style={styles.compactDate}>
           <View>
             <WhiteText style={{ textAlign: "center" }}>
@@ -176,6 +188,37 @@ function DriversLicenseView() {
             />
           </View>
         </View>
+        <ButtonLarge
+          label="Submit"
+          style={{ width: "100%", height: 40 }}
+          onPress={() => {
+            getToken().then((stored_token) => {
+              if (stored_token) {
+                createDocument(stored_token, {
+                  documentId: 0,
+                  documentType: "DriversLicense",
+                  creationDate: new Date().toISOString(),
+                  expirationDate: expirationDate?.toISOString() as string,
+                  issueDate: issueDate?.toISOString() as string,
+                  validationStatus: "",
+                  driversLicenseNumber: licenseNumber,
+                  dateOfBirth: dateOfBirth?.toISOString() as string,
+                  class: classType,
+                  height: Number(height),
+                  sex: sex,
+                  province: province,
+                  city: city,
+                  address: address,
+                  postalCode: postalCode,
+                })
+                  .then(() => {
+                    router.navigate("/home/home");
+                  })
+                  .catch((e) => {});
+              }
+            });
+          }}
+        />
       </View>
     </Content>
   );
