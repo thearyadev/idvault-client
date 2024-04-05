@@ -1,36 +1,27 @@
-import { Text, View, TextInput, Button, Pressable } from "react-native";
+import { Text, View, TextInput } from "react-native";
 import React, { useEffect, useState } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Token } from "lib/types";
 import { login, userDetails } from "lib/api";
 import { Redirect } from "expo-router";
 import { StyleSheet } from "react-native";
 import ButtonLarge from "components/buttons/button_large";
 import LinkText from "components/text/link";
+import { getToken, setUsersName } from "lib/asyncStorage";
+
 export default function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState(false);
   const [tokenAuth, setTokenAuth] = useState(false);
 
   useEffect(() => {
     getToken().then((stored_token) => {
       if (stored_token) {
-        userDetails(stored_token).then(() => {
-          setToken(stored_token).then(() => {
-            setTokenAuth(true);
-          });
+        userDetails(stored_token).then((user_details) => {
+          setTokenAuth(true);
+          setUsersName(user_details.name);
         });
       }
     });
   }, []);
-
-  const getToken = async () => {
-    return await AsyncStorage.getItem("token");
-  };
-  const setToken = async (token: Token) => {
-    await AsyncStorage.setItem("token", token);
-  };
 
   if (tokenAuth) {
     return <Redirect href="/home/home" />;
@@ -59,14 +50,13 @@ export default function LoginScreen() {
       <ButtonLarge
         label="Login"
         onPress={() => {
-          login(username, password).then((token) => {
-            if (token) {
-              setToken(token).then(() => {
+          login(username, password).then(() => {
+            getToken().then((stored_token) => {
+              userDetails(stored_token as string).then((user_details) => {
                 setTokenAuth(true);
+                setUsersName(user_details.name);
               });
-            } else {
-              setError(true);
-            }
+            });
           });
         }}
       />
@@ -108,11 +98,11 @@ const styles = StyleSheet.create({
     color: "white",
   },
   registerPromptLink: {
-    paddingLeft: 5
+    paddingLeft: 5,
   },
   registerContainer: {
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: 60
-  }
+    paddingTop: 60,
+  },
 });

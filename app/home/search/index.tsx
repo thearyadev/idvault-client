@@ -1,4 +1,9 @@
-import WhiteText from "components/text/white_text"
+import WhiteText from "components/text/white_text";
+import Content from "components/wrappers/content";
 export default function SearchScreen() {
-  return <WhiteText>Search</WhiteText>
+  return (
+    <Content>
+      <WhiteText>Search</WhiteText>
+    </Content>
+  );
 }

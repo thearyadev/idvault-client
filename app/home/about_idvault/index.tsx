@@ -1,4 +1,9 @@
-import WhiteText from "components/text/white_text"
+import WhiteText from "components/text/white_text";
+import Content from "components/wrappers/content";
 export default function AboutScreen() {
-  return <WhiteText>About</WhiteText>
+  return (
+    <Content>
+      <WhiteText>About</WhiteText>
+    </Content>
+  );
 }

@@ -1,4 +1,9 @@
-import WhiteText from "components/text/white_text"
+import WhiteText from "components/text/white_text";
+import Content from "components/wrappers/content";
 export default function MyAccountScreen() {
-  return <WhiteText>My Account</WhiteText>
+  return (
+    <Content>
+      <WhiteText>My Account</WhiteText>
+    </Content>
+  );
 }
