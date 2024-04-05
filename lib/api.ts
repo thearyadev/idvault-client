@@ -1,11 +1,11 @@
 import { GenericDocument, Token, UserDetails } from "./types";
-
+import { setToken, setUsersName } from "./asyncStorage";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const API_URL: string = "http://192.168.1.160:3000"; // will be changed in production
-
 export async function login(
   username: string,
   password: string,
-): Promise<Token> {
+): Promise<boolean> {
   const requestBody = new URLSearchParams();
   requestBody.append("username", username);
   requestBody.append("password", password);
@@ -20,7 +20,8 @@ export async function login(
     return Promise.reject("Failed to login");
   }
   const token = (await request.text()) as Token;
-  return token;
+  setToken(token);
+  return true;
 }
 
 export async function userDetails(token: Token): Promise<UserDetails> {
