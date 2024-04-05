@@ -5,9 +5,7 @@ import { StyleSheet, View } from "react-native";
 import Content from "components/wrappers/content";
 import {
   BirthCertificate,
-  DocumentsArray,
   DriversLicense,
-  GenericDocument,
   Passport,
 } from "lib/types";
 import ButtonSquareWithIcon from "components/buttons/button_square";
@@ -16,7 +14,6 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { ScrollView } from "react-native";
 import { DocTypes } from "lib/types";
-import { router } from "expo-router";
 export default function AppHome() {
   const [name, setName] = useState("");
   const [documents, setDocuments] = useState<
@@ -24,18 +21,22 @@ export default function AppHome() {
   >([
     // @ts-ignore
     {
+      documentId: 1,
       documentType: "DriversLicense",
     },
     // @ts-ignore
     {
+      documentId: 2,
       documentType: "BirthCertificate",
     },
     // @ts-ignore
     {
+      documentId: 3,
       documentType: "Passport",
     },
     // @ts-ignore
     {
+      documentId: 4,
       documentType: "DriversLicense",
     },
   ]);
@@ -62,13 +63,22 @@ export default function AppHome() {
             {documents.length ? (
               documents.map((document, index) => {
                 // @ts-ignore
-                const docData = DocTypes[document.documentType as keyof typeof DocTypes];
+                const docData =
+                  DocTypes[document.documentType as keyof typeof DocTypes];
 
-                return (<View key={index}>
-                  <ButtonSquareWithIcon icon={docData.iconName} label={docData.name} onPress={() => {router.navigate("/home/view_document")}} style={{marginLeft: 10}}>
-                    <docData.iconComponent />
-                  </ButtonSquareWithIcon>
-                </View>)
+                return (
+                  <View key={index}>
+                    <ButtonSquareWithIcon
+                      icon={docData.iconName}
+                      label={docData.name}
+                      pathname="/home/view_document"
+                      data={{ documentId: document.documentId }}
+                      style={{ marginLeft: 10 }}
+                    >
+                      <docData.iconComponent />
+                    </ButtonSquareWithIcon>
+                  </View>
+                );
               })
             ) : (
               <WhiteText style={styles.noDocumentsFoundText}>
@@ -84,21 +94,24 @@ export default function AppHome() {
         <View style={styles.addDocumentContainer}>
           <ButtonSquareWithIcon
             label="Drivers License"
-            onPress={() => {router.navigate("/home/add_document")}}
+            pathname="/home/add_document"
+            data={{ documentType: "DriversLicense" }}
             icon="car"
           >
             <AntDesign />
           </ButtonSquareWithIcon>
           <ButtonSquareWithIcon
             label="Passport"
-            onPress={() => {router.navigate("/home/add_document")}}
+            pathname="/home/add_document"
+            data={{ documentType: "Passport" }}
             icon="passport"
           >
             <FontAwesome5 />
           </ButtonSquareWithIcon>
           <ButtonSquareWithIcon
             label="Birth Certificate"
-            onPress={() => {router.navigate("/home/add_document")}}
+            pathname="/home/add_document"
+            data={{ documentType: "BirthCertificate" }}
             icon="certificate"
           >
             <MaterialCommunityIcons />

@@ -1,32 +1,41 @@
 import React from "react";
+import { Link } from "expo-router";
 import { Text, Pressable, StyleProp, TextStyle } from "react-native";
 import { StyleSheet } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { router } from "expo-router";
 export default function ButtonSquareWithIcon({
-  onPress,
+  pathname,
+  data,
   style = {},
   label,
   children,
-  icon
+  icon,
 }: {
-  onPress: () => void;
   style?: StyleProp<TextStyle>;
   label?: string;
   children: React.ReactNode;
   icon: string;
+  pathname: string;
+  data: any;
 }) {
   return (
-    <Pressable
-      style={{ ...styles.btnStyle, ...(style as object) }}
-      onPress={onPress}
+    <Link
+      href={{
+        pathname: pathname,
+        params: data,
+      }}
+      asChild
     >
-      {React.cloneElement(children as React.ReactElement<any>, {
+      <Pressable style={{ ...styles.btnStyle, ...(style as object) }}>
+        {React.cloneElement(children as React.ReactElement<any>, {
           color: "black",
           size: 38,
           name: icon,
         })}
-      <Text style={styles.btnLabel}>{label}</Text>
-    </Pressable>
+        <Text style={styles.btnLabel}>{label}</Text>
+      </Pressable>
+    </Link>
   );
 }
 
@@ -43,6 +52,6 @@ const styles = StyleSheet.create({
   },
   btnLabel: {
     textAlign: "center",
-    paddingTop: 3
-  }
+    paddingTop: 3,
+  },
 });
