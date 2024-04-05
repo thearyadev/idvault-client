@@ -6,10 +6,16 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import Navbar from "components/navbar/navbar";
 
 export default function BaseLayout() {
-  // AsyncStorage.clear()
   return (
     <>
       <Stack>
+        <Stack.Screen
+          name="authentication/login"
+          options={{
+            headerShown: false,
+            gestureEnabled: false
+          }}
+        />
         <Stack.Screen
           name="home/home"
           options={{
