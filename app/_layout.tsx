@@ -47,7 +47,7 @@ export default function BaseLayout() {
         />
 
 
-
+        <Stack.Screen name="authentication/register" options={{presentation: "modal", headerShown: false}}/>
         <Stack.Screen name="home/view_document" options={{presentation: "modal", headerShown: false}}/>
         <Stack.Screen name="home/add_document" options={{presentation: "modal", headerShown: false}}/>
       </Stack>
