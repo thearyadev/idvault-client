@@ -7,8 +7,8 @@ import {
   Token,
   UserDetails,
 } from "./types";
-import { setToken, setUsersName } from "./asyncStorage";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setToken } from "./asyncStorage";
+
 const API_URL: string = "http://192.168.1.160:3000"; // will be changed in production
 export async function login(
   username: string,
@@ -29,6 +29,31 @@ export async function login(
   }
   const token = (await request.text()) as Token;
   setToken(token);
+  return true;
+}
+export async function register(
+  username: string,
+  password: string,
+  name: string,
+  email: string,
+  phoneNumber: string,
+): Promise<boolean> {
+  const requestBody = new URLSearchParams();
+  requestBody.append("username", username);
+  requestBody.append("password", password);
+  requestBody.append("fullname", name);
+  requestBody.append("email", email);
+  requestBody.append("phone_number", phoneNumber);
+  const request = await fetch(`${API_URL}/users/register`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/x-www-form-urlencoded",
+    },
+    body: requestBody.toString(),
+  });
+  if (!request.ok) {
+    return Promise.reject("Failed to register");
+  }
   return true;
 }
 

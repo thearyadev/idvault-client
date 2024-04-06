@@ -1,7 +1,7 @@
 import { Text, View, TextInput } from "react-native";
 import React, { useEffect, useState } from "react";
 import { login, userDetails } from "lib/api";
-import { Redirect } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { StyleSheet } from "react-native";
 import ButtonLarge from "components/buttons/button_large";
 import LinkText from "components/text/link";
@@ -70,7 +70,7 @@ export default function LoginScreen() {
         />
         <View style={styles.registerContainer}>
           <Text style={styles.registerPrompt}>New to IDVault?</Text>
-          <LinkText label="Register" style={styles.registerPromptLink} />
+          <LinkText label="Register" style={styles.registerPromptLink} onPress={() => {router.navigate("/authentication/register")}}/>
         </View>
       </View>
     </Content>

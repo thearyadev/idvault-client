@@ -14,8 +14,6 @@ import { getAllDocuments } from "lib/api";
 import { getToken } from "lib/asyncStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-AsyncStorage.clear();
-
 
 export default function AppHome() {
   const [name, setName] = useState("");
