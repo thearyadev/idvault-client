@@ -21,7 +21,8 @@
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.techmonarchs.idvault"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -29,5 +30,14 @@
     "plugins": [
       "expo-router"
     ],
+    "extra": {
+      "router": {
+        "origin": false
+      },
+      "eas": {
+        "projectId": "7bec1d10-56fd-404d-aa6f-879849a8acb5"
+      }
+    },
+    "owner": "arya99"
   }
 }
