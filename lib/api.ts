@@ -9,7 +9,8 @@ import {
 } from "./types";
 import { setToken } from "./asyncStorage";
 
-const API_URL: string = "http://192.168.1.160:3000"; // will be changed in production
+const API_URL: string = process.env.API_SERVER_URL || "https://192.168.1.160:3000";
+
 export async function login(
   username: string,
   password: string,
