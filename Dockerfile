@@ -5,4 +5,4 @@ WORKDIR /app
 COPY . .
 
 RUN npm install
-ENTRYPOINT ["npx", "expo", "start", "--port=8080"]
+ENTRYPOINT ["npx", "expo", "start", "--port=443"]
