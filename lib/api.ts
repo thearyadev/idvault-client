@@ -9,8 +9,8 @@ import {
 } from "./types";
 import { setToken } from "./asyncStorage";
 
-const API_URL: string = process.env.API_SERVER_URL || "https://192.168.1.160:3000";
-console.log(API_URL);
+const API_URL: string = "https://idvault-server-production.up.railway.app"
+
 export async function login(
   username: string,
   password: string,
