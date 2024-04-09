@@ -9,7 +9,7 @@ import {
 } from "./types";
 import { setToken } from "./asyncStorage";
 
-const API_URL: string = "https://idvault-server-production.up.railway.app"
+const API_URL: string = "http://192.168.1.160:3000"
 
 export async function login(
   username: string,
