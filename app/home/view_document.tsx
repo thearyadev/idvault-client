@@ -4,7 +4,7 @@ import { useLocalSearchParams } from "expo-router";
 import { getDocument } from "lib/api";
 import { getToken } from "lib/asyncStorage";
 import { BirthCertificate, DriversLicense, Passport } from "lib/types";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { View, Text } from "react-native";
 import { DocTypes } from "lib/types";
@@ -27,15 +27,17 @@ export default function ViewDocument() {
       </Content>
     );
   }
+  useEffect(() => {
+    getToken().then((stored_token) => {
+      if (stored_token !== null) {
+        getDocument(stored_token, parseInt(documentId)).then((docu) => {
+          setDoc(docu);
+        });
+      }
+    });
+  }, []);
 
-  getToken().then((stored_token) => {
-    if (stored_token !== null) {
-      getDocument(stored_token, parseInt(documentId)).then((docu) => {
-        setDoc(docu);
-        console.log(docu)
-      });
-    }
-  });
+  console.log(doc);
 
   return (
     <Content>
@@ -50,9 +52,7 @@ export default function ViewDocument() {
           <WhiteText style={{ textAlign: "center" }}>Placeholder</WhiteText>
         </View>
 
-        <WhiteText style={{ fontSize: 25 }}>
-          {doc?.documentType}
-        </WhiteText>
+        <WhiteText style={{ fontSize: 25 }}>{doc?.documentType}</WhiteText>
         <WhiteText>Issue Date: {doc?.issueDate.toString()}</WhiteText>
         <WhiteText>Expiration Date: {doc?.expirationDate.toString()}</WhiteText>
         <WhiteText>Creation Date: {doc?.creationDate}</WhiteText>
