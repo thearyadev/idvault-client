@@ -71,8 +71,13 @@ export async function userDetails(token: Token): Promise<UserDetails> {
   return (await request.json()) as UserDetails;
 }
 
-export function getDocument(token: Token, documentId: number): GenericDocument {
-  throw new Error("Not implemented");
+export async function getDocument(token: Token, documentId: number): Promise<Passport | BirthCertificate | DriversLicense>  {
+  const request = await fetch(`${API_URL}/documents/details/${documentId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return (await request.json()) as Passport | BirthCertificate | DriversLicense;
 }
 
 export async function getAllDocuments(token: Token): Promise<DocumentsArray> {

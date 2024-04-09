@@ -1,8 +1,2 @@
-- homepage
-- navbar
-- logo
-- add id [passport, birth cert, drivers license]
-- view id
-- delete id
-
-
+- React Native: React Apps -> mobile (android, ios)
+    - Expo (expo.dev): -> prototype
