@@ -5,13 +5,16 @@ import { router, useLocalSearchParams } from "expo-router";
 import { DocTypes } from "lib/types";
 import { Button, ScrollViewBase, StyleSheet } from "react-native";
 import { TextInput, View } from "react-native";
-import DateTimePicker from "@react-native-community/datetimepicker";
+import DateTimePicker, {
+  DateTimePickerAndroid,
+} from "@react-native-community/datetimepicker";
 import RNPickerSelect from "react-native-picker-select";
 import { ScrollView } from "react-native-gesture-handler";
 import ButtonLarge from "components/buttons/button_large";
 import { createDocument } from "lib/api";
 import { getToken } from "lib/asyncStorage";
 import Toast from "react-native-root-toast";
+import { Platform } from "react-native";
 type AddDocumentParams = {
   documentType: keyof typeof DocTypes;
 };
@@ -43,6 +46,114 @@ function DriversLicenseView() {
   const [city, setCity] = useState("");
   const [address, setAddress] = useState("");
   const [postalCode, setPostalCode] = useState("");
+  const datePickers = [];
+  if (Platform.OS === "android") {
+    datePickers.push(
+      <View>
+        <WhiteText style={{ textAlign: "center" }}>Expiration Date</WhiteText>
+        <ButtonLarge
+          label={
+            expirationDate
+              ? expirationDate.toDateString()
+              : "Select Expiration Date"
+          }
+          onPress={() => {
+            DateTimePickerAndroid.open({
+              testID: "dateTimePicker",
+              mode: "date",
+              value: expirationDate || new Date(),
+              onChange: (_, selectedDate) => {
+                setExpirationDate(selectedDate || null);
+                DateTimePickerAndroid.dismiss("date");
+              },
+            });
+          }}
+        />
+      </View>,
+    );
+    datePickers.push(
+      <View>
+        <WhiteText style={{ textAlign: "center" }}>Issue Date</WhiteText>
+        <ButtonLarge
+          label={issueDate ? issueDate.toDateString() : "Select Issue Date"}
+          onPress={() => {
+            DateTimePickerAndroid.open({
+              testID: "dateTimePicker",
+              mode: "date",
+              value: issueDate || new Date(),
+              onChange: (_, selectedDate) => {
+                setIssueDate(selectedDate || null);
+                DateTimePickerAndroid.dismiss("date");
+              },
+            });
+          }}
+        />
+      </View>,
+    );
+    datePickers.push(
+      <View>
+        <WhiteText style={{ textAlign: "center" }}>Date of Birth</WhiteText>
+        <ButtonLarge
+          label={
+            dateOfBirth ? dateOfBirth.toDateString() : "Select Date of Birth"
+          }
+          onPress={() => {
+            DateTimePickerAndroid.open({
+              testID: "dateTimePicker",
+              mode: "date",
+              value: dateOfBirth || new Date(),
+              onChange: (_, selectedDate) => {
+                setDateOfBirth(selectedDate || null);
+                DateTimePickerAndroid.dismiss("date");
+              },
+            });
+          }}
+        />
+      </View>,
+    );
+  }
+
+  if (Platform.OS === "ios") {
+    datePickers.push(
+      <View>
+        <WhiteText style={{ textAlign: "center" }}>Expiration Date</WhiteText>
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={expirationDate || new Date()}
+          mode="date"
+          onChange={(_, selectedDate) => {
+            setExpirationDate(selectedDate || null);
+          }}
+        />
+      </View>,
+    );
+    datePickers.push(
+      <View>
+        <WhiteText style={{ textAlign: "center" }}>Issue Date</WhiteText>
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={issueDate || new Date()}
+          mode="date"
+          onChange={(_, selectedDate) => {
+            setIssueDate(selectedDate || null);
+          }}
+        />
+      </View>,
+    );
+    datePickers.push(
+      <View>
+        <WhiteText style={{ textAlign: "center" }}>Date of Birth</WhiteText>
+        <DateTimePicker
+          testID="dateTimePicker"
+          value={dateOfBirth || new Date()}
+          mode="date"
+          onChange={(_, selectedDate) => {
+            setDateOfBirth(selectedDate || null);
+          }}
+        />
+      </View>,
+    );
+  }
 
   return (
     <Content>
@@ -152,41 +263,9 @@ function DriversLicenseView() {
         </View>
 
         <View style={styles.compactDate}>
-          <View>
-            <WhiteText style={{ textAlign: "center" }}>
-              Expiration Date
-            </WhiteText>
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={expirationDate || new Date()}
-              mode="date"
-              onChange={(_, selectedDate) => {
-                setExpirationDate(selectedDate || null);
-              }}
-            />
-          </View>
-          <View>
-            <WhiteText style={{ textAlign: "center" }}>Issue Date</WhiteText>
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={issueDate || new Date()}
-              mode="date"
-              onChange={(_, selectedDate) => {
-                setIssueDate(selectedDate || null);
-              }}
-            />
-          </View>
-          <View>
-            <WhiteText style={{ textAlign: "center" }}>Date of Birth</WhiteText>
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={dateOfBirth || new Date()}
-              mode="date"
-              onChange={(_, selectedDate) => {
-                setDateOfBirth(selectedDate || null);
-              }}
-            />
-          </View>
+          {datePickers.map((picker, index) => (
+            <View key={index}>{picker}</View>
+          ))}
         </View>
         <ButtonLarge
           label="Submit"
