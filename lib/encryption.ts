@@ -1,9 +1,11 @@
 import { GenericDocument } from "./types";
+import {KeyPair, RSA} from "react-native-rsa-native"
 import { setPublicKey, getPublicKey, setPrivateKey, getPrivateKey } from "./asyncStorage";
-import * as Crypto from "expo-crypto";
 
 
-function generateEncryptionKeys(): { publicKey: string; privateKey: string } {}
+async function generateEncryptionKeys(): Promise<KeyPair> {
+  return await RSA.generateKeys(2048);
+}
 
 function encryptText(text: string, publicKey: string): string {}
 
