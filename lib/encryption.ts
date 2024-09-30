@@ -1,17 +1,72 @@
 import { GenericDocument } from "./types";
-import {KeyPair, RSA} from "react-native-rsa-native"
 import { setPublicKey, getPublicKey, setPrivateKey, getPrivateKey } from "./asyncStorage";
+import forge from "node-forge"
 
+type KeyPair = ReturnType<typeof forge.pki.rsa.generateKeyPair>
 
-async function generateEncryptionKeys(): Promise<KeyPair> {
-  return await RSA.generateKeys(2048);
+export function generateEncryptionKeys(): KeyPair {
+  return forge.pki.rsa.generateKeyPair({bits: 256, e: 0x10001})
 }
 
-function encryptText(text: string, publicKey: string): string {}
+export function saveKeys(keyPair: KeyPair): void {
+  setPublicKey(forge.pki.publicKeyToPem(keyPair.publicKey))
+  setPrivateKey(forge.pki.privateKeyToPem(keyPair.privateKey))
+}
 
-function decryptText(text: string, privateKey: string): string {}
+export async function loadKeys(): Promise<KeyPair | null> {
+  const publicKey = await getPublicKey()
+  const privateKey = await getPrivateKey()
+  if (!publicKey || !privateKey) {
+    return null
+  }
+  return {
+    publicKey: forge.pki.publicKeyFromPem(publicKey),
+    privateKey: forge.pki.privateKeyFromPem(privateKey)
+  }
+}
 
-function decryptDocument<T extends GenericDocument>(data: T , privateKey: string): T {}
+export function encryptText(text: string, publicKey: KeyPair['publicKey']): string {
+  const encrypted = publicKey.encrypt(text)
+  return encrypted
+}
 
-function encryptDocument<T extends GenericDocument>(data: T, publicKey: string): T {}
+export function decryptText(text: string, privateKey: KeyPair['privateKey']): string {
+  const decrypted = privateKey.decrypt(text)
+  return decrypted
+}
+
+export function decryptDocument<T extends GenericDocument>(data: T , privateKey: KeyPair['privateKey']): T {
+  const decryptedData: Partial<T> = {}
+
+  for (const key in data) {
+    if (typeof data[key] === 'string') {
+      if (key === "documentType"){
+        decryptedData[key] = data[key]
+        continue
+      } 
+      // @ts-ignore
+      decryptedData[key] = decryptText(forge.util.decode64(data[key]), privateKey)
+    }
+  }
+  // @ts-ignore
+  return decryptedData
+}
+
+export function encryptDocument<T extends GenericDocument>(data: T, publicKey: KeyPair['publicKey']): T {
+  const encryptedData: Partial<T> = {}
+
+  for (const key in data) {
+    if (typeof data[key] === 'string') {
+      if (key === "documentType") {
+        encryptedData[key] = data[key]
+        continue
+      }
+      // @ts-ignore
+      encryptedData[key] = forge.util.encode64(encryptText(data[key], publicKey))
+    }
+  }
+  console.log(encryptedData)
+  // @ts-ignore
+  return encryptedData
+}
 
