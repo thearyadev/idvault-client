@@ -8,8 +8,9 @@ import {
   UserDetails,
 } from "./types";
 import { setToken } from "./asyncStorage";
+import { decryptDocument, encryptDocument, generateEncryptionKeys, loadKeys } from "./encryption";
 
-const API_URL: string = "http://192.168.1.160:3000"
+const API_URL: string = "http://192.168.1.11"
 
 export async function login(
   username: string,
@@ -71,22 +72,30 @@ export async function userDetails(token: Token): Promise<UserDetails> {
   return (await request.json()) as UserDetails;
 }
 
-export async function getDocument(token: Token, documentId: number): Promise<Passport | BirthCertificate | DriversLicense>  {
+export async function getDocument(token: Token, documentId: number): Promise<GenericDocument>  {
   const request = await fetch(`${API_URL}/documents/details/${documentId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  return (await request.json()) as Passport | BirthCertificate | DriversLicense;
+  return (await request.json()) as GenericDocument;
 }
 
 export async function getAllDocuments(token: Token): Promise<DocumentsArray> {
+
+  const keys = await loadKeys();
+    if (!keys) {
+      return Promise.reject("Could not load encryption keys");
+    }
   const request = await fetch(`${API_URL}/documents/document_list`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  return (await request.json()) as DocumentsArray;
+
+  return ((await request.json()) as DocumentsArray).map((encryptedDocument) => {
+    return decryptDocument(encryptedDocument, keys.privateKey) 
+  });
 }
 
 export function deleteDocument(token: Token, documentId: number): boolean {
@@ -95,13 +104,18 @@ export function deleteDocument(token: Token, documentId: number): boolean {
 
 export async function createDocument(
   token: Token,
-  document: Passport | BirthCertificate | DriversLicense,
+  document: GenericDocument,
 ) {
+  const keys = await loadKeys();
+  if (!keys) {
+    return Promise.reject("Could not load encryption keys");
+  }
+  const encryptedDocument = encryptDocument(document, keys.publicKey)
   const request = await fetch(
     `${API_URL}/documents/add/${document.documentType}`,
     {
       method: "POST",
-      body: JSON.stringify(document),
+      body: JSON.stringify(encryptedDocument),
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
