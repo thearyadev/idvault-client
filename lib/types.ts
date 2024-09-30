@@ -15,10 +15,6 @@ export type Token = string;
 export interface Document {
   documentId: number;
   documentType: string;
-  creationDate: string;
-  expirationDate: string;
-  issueDate: string;
-  validationStatus: string;
 }
 
 export interface Passport extends Document {
@@ -34,7 +30,7 @@ export interface DriversLicense extends Document {
   driversLicenseNumber: string;
   dateOfBirth: string;
   class: string;
-  height: number;
+  height: string;
   sex: string;
   province: string;
   city: string;
@@ -66,7 +62,7 @@ export const DocTypes = {
   BirthCertificate: {
     name: "Birth Certificate",
     iconName: "certificate",
-    iconComponent: MaterialCommunityIcons ,
+    iconComponent: MaterialCommunityIcons,
   },
   DriversLicense:{
     name: "Drivers License",
