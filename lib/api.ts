@@ -73,12 +73,16 @@ export async function userDetails(token: Token): Promise<UserDetails> {
 }
 
 export async function getDocument(token: Token, documentId: number): Promise<GenericDocument>  {
+  const keys = await loadKeys();
+    if (!keys) {
+      return Promise.reject("Could not load encryption keys");
+    }
   const request = await fetch(`${API_URL}/documents/details/${documentId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  return (await request.json()) as GenericDocument;
+  return decryptDocument((await request.json()) as GenericDocument, keys.privateKey);
 }
 
 export async function getAllDocuments(token: Token): Promise<DocumentsArray> {
