@@ -48,6 +48,7 @@ export function decryptDocument<T extends GenericDocument>(data: T , privateKey:
       decryptedData[key] = decryptText(forge.util.decode64(data[key]), privateKey)
     }
   }
+  decryptedData.documentId = data.documentId
   // @ts-ignore
   return decryptedData
 }
