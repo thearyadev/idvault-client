@@ -54,7 +54,7 @@ const Navbar: React.FC = () => {
       <NavbarItem path="/home/home" iconName="home">
         <AntDesign />
       </NavbarItem>
-      <NavbarItem path="/home/search" iconName="search1">
+      <NavbarItem path="/home/sharing" iconName="ShareAltOutlined">
         <AntDesign />
       </NavbarItem>
       <NavbarItem path="/home/my_account" iconName="account-cog-outline">

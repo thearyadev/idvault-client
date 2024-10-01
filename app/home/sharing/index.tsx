@@ -3,7 +3,7 @@ import Content from "components/wrappers/content";
 export default function SearchScreen() {
   return (
     <Content>
-      <WhiteText>Search</WhiteText>
+      <WhiteText>Sharing</WhiteText>
     </Content>
   );
 }

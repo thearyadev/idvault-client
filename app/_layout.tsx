@@ -25,7 +25,7 @@ export default function BaseLayout() {
           }}
         />
         <Stack.Screen
-          name="home/search/index"
+          name="home/sharing/index"
           options={{
             headerShown: false,
             gestureEnabled: false,
