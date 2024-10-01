@@ -8,7 +8,8 @@ import {
   UserDetails,
 } from "./types";
 import { setToken } from "./asyncStorage";
-import { decryptDocument, encryptDocument, generateEncryptionKeys, loadKeys } from "./encryption";
+import { decryptDocument, encryptDocument, generateEncryptionKeys, loadKeys, type KeyPair } from "./encryption";
+import forge from "node-forge";
 
 const API_URL: string = "http://192.168.1.11"
 
@@ -136,5 +137,19 @@ export async function createDocument(
   }
   if (!request.ok) {
     return Promise.reject("Failed to create document");
+  }
+}
+
+export async function savePublicKey(publicKey: KeyPair["publicKey"], token: Token) {
+  const request = await fetch(`${API_URL}/users/key`, {
+    method: "POST",
+    body: JSON.stringify({ publicKey: forge.pki.publicKeyToPem(publicKey) }),
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!request.ok) {
+    return Promise.reject("Failed to save public key");
   }
 }
