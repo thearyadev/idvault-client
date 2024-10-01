@@ -3,7 +3,7 @@ import Content from "components/wrappers/content";
 import { useLocalSearchParams } from "expo-router";
 import { getDocument } from "lib/api";
 import { getToken } from "lib/asyncStorage";
-import { BirthCertificate, DriversLicense, GenericDocument, Passport } from "lib/types";
+import { BirthCertificate, DriversLicense, Passport } from "lib/types";
 import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { View, Text } from "react-native";
@@ -16,14 +16,14 @@ type ViewDocumentParams = {
 export default function ViewDocument() {
   const params = useLocalSearchParams<ViewDocumentParams>();
   const [doc, setDoc] = useState<
-    GenericDocument | null
+    Passport | BirthCertificate | DriversLicense | null
   >(null);
   const { documentId } = params;
 
   if (documentId === undefined) {
     return (
       <Content>
-        <WhiteText>Error: no doc id provided</WhiteText>
+        <WhiteText>Error</WhiteText>
       </Content>
     );
   }
@@ -53,6 +53,9 @@ export default function ViewDocument() {
         </View>
 
         <WhiteText style={{ fontSize: 25 }}>{doc?.documentType}</WhiteText>
+        <WhiteText>Issue Date: {doc?.issueDate.toString()}</WhiteText>
+        <WhiteText>Expiration Date: {doc?.expirationDate.toString()}</WhiteText>
+        <WhiteText>Creation Date: {doc?.creationDate}</WhiteText>
 
         {doc?.documentType === "DriversLicense" && (
           <View>
@@ -88,6 +91,22 @@ export default function ViewDocument() {
             </WhiteText>
           </View>
         )}
+
+        <View
+          style={{
+            backgroundColor:
+              doc?.validationStatus == "Validated" ? "green" : "red",
+            padding: 10,
+            marginTop: 10,
+            borderRadius: 10,
+          }}
+        >
+          <WhiteText>
+            {doc?.validationStatus == "Validated"
+              ? "VALID"
+              : "PENDING VALIDATION"}
+          </WhiteText>
+        </View>
       </View>
     </Content>
   );
