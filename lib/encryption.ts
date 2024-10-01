@@ -2,7 +2,7 @@ import { GenericDocument } from "./types";
 import { setPublicKey, getPublicKey, setPrivateKey, getPrivateKey } from "./asyncStorage";
 import forge from "node-forge"
 
-type KeyPair = ReturnType<typeof forge.pki.rsa.generateKeyPair>
+export type KeyPair = ReturnType<typeof forge.pki.rsa.generateKeyPair>
 
 export function generateEncryptionKeys(): KeyPair {
   return forge.pki.rsa.generateKeyPair({bits: 256, e: 0x10001})
