@@ -40,7 +40,6 @@ export default function ViewDocument() {
     });
   }, []);
 
-  console.log(doc);
 
   return (
     <Content>

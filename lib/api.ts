@@ -159,7 +159,7 @@ export async function savePublicKey(
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-  });
+  })
   if (!request.ok) {
     return Promise.reject("Failed to save public key");
   }

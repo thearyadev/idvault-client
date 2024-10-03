@@ -3,6 +3,7 @@ import ButtonLarge from "components/buttons/button_large";
 import WhiteText from "components/text/white_text";
 import Content from "components/wrappers/content";
 import { router } from "expo-router";
+import { wipe } from "lib/asyncStorage";
 export default function MyAccountScreen() {
   return (
     <Content>
@@ -15,8 +16,9 @@ export default function MyAccountScreen() {
         label="Logout"
         style={{ width: "100%" }}
         onPress={() => {
-          AsyncStorage.clear().catch();
-          router.navigate("authentication/login");
+          wipe().then(() => {
+            router.navigate("authentication/login");
+          });
         }}
       />
     </Content>

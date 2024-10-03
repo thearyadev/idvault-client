@@ -5,8 +5,11 @@ import {
   setPrivateKey,
   getPrivateKey,
   getUsername,
+  getToken,
+  setUsername,
 } from "./asyncStorage";
 import forge from "node-forge";
+import { userDetails } from "./api";
 
 export type KeyPair = ReturnType<typeof forge.pki.rsa.generateKeyPair>;
 
@@ -20,10 +23,16 @@ export function saveKeys(keyPair: KeyPair, username: string): void {
 }
 
 export async function loadKeys(): Promise<KeyPair | null> {
-  const username = await getUsername();
+  let username = await getUsername(); // get username from async storage
   if (!username) {
-    console.log("No username provided");
-    return null;
+    const token = await getToken();
+    if (!token) {
+      return null;
+    }
+
+    const user = await userDetails(token);
+    setUsername(user.username);
+    username = user.username;
   }
   const publicKey = await getPublicKey(username);
   const privateKey = await getPrivateKey(username);
@@ -98,7 +107,6 @@ export function encryptDocument<T extends GenericDocument>(
       );
     }
   }
-  console.log(encryptedData);
   // @ts-ignore
   return encryptedData;
 }
