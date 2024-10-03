@@ -7,15 +7,13 @@ import { Pressable, Text, View } from "react-native";
 import ButtonSquareWithIcon from "components/buttons/button_square";
 import { StyleSheet } from "react-native";
 
-
-import BottomSheet, { BottomSheetMethods } from '@devvie/bottom-sheet/src/index';
+import BottomSheet, {
+  BottomSheetMethods,
+} from "@devvie/bottom-sheet/src/index";
 import { useEffect, useRef, useState } from "react";
 import { GenericDocument } from "lib/types";
 import { getToken } from "lib/asyncStorage";
 import { getAllDocuments } from "lib/api";
-
-
-
 
 export default function SearchScreen() {
   const sheetRef = useRef<BottomSheetMethods>(null);
@@ -31,18 +29,19 @@ export default function SearchScreen() {
     });
   }, []);
 
-
   return (
     <Content>
       <WhiteText>Sharing</WhiteText>
-      <Pressable style={styles.btnStyle} onPress={() => {
+      <Pressable
+        style={styles.btnStyle}
+        onPress={() => {
           sheetRef.current?.open();
-        }}>
+        }}
+      >
         <Text style={styles.btnLabel}>Share a Document</Text>
-        </Pressable>
+      </Pressable>
       <BottomSheet ref={sheetRef}>
-        <View style={{padding: 15}}>
-        </View>
+        <View style={{ padding: 15 }}></View>
       </BottomSheet>
     </Content>
   );

@@ -3,7 +3,12 @@ import Content from "components/wrappers/content";
 import { useLocalSearchParams } from "expo-router";
 import { getDocument } from "lib/api";
 import { getToken } from "lib/asyncStorage";
-import { BirthCertificate, DriversLicense, GenericDocument, Passport } from "lib/types";
+import {
+  BirthCertificate,
+  DriversLicense,
+  GenericDocument,
+  Passport,
+} from "lib/types";
 import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { View, Text } from "react-native";
@@ -15,9 +20,7 @@ type ViewDocumentParams = {
 
 export default function ViewDocument() {
   const params = useLocalSearchParams<ViewDocumentParams>();
-  const [doc, setDoc] = useState<
-    GenericDocument | null
-  >(null);
+  const [doc, setDoc] = useState<GenericDocument | null>(null);
   const { documentId } = params;
 
   if (documentId === undefined) {

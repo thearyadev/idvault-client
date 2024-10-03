@@ -8,10 +8,16 @@ import {
   UserDetails,
 } from "./types";
 import { setToken } from "./asyncStorage";
-import { decryptDocument, encryptDocument, generateEncryptionKeys, loadKeys, type KeyPair } from "./encryption";
+import {
+  decryptDocument,
+  encryptDocument,
+  generateEncryptionKeys,
+  loadKeys,
+  type KeyPair,
+} from "./encryption";
 import forge from "node-forge";
 
-const API_URL: string = "http://192.168.1.11"
+const API_URL: string = "http://192.168.1.11";
 
 export async function login(
   username: string,
@@ -73,25 +79,30 @@ export async function userDetails(token: Token): Promise<UserDetails> {
   return (await request.json()) as UserDetails;
 }
 
-export async function getDocument(token: Token, documentId: number): Promise<GenericDocument>  {
+export async function getDocument(
+  token: Token,
+  documentId: number,
+): Promise<GenericDocument> {
   const keys = await loadKeys();
-    if (!keys) {
-      return Promise.reject("Could not load encryption keys");
-    }
+  if (!keys) {
+    return Promise.reject("Could not load encryption keys");
+  }
   const request = await fetch(`${API_URL}/documents/details/${documentId}`, {
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-  return decryptDocument((await request.json()) as GenericDocument, keys.privateKey);
+  return decryptDocument(
+    (await request.json()) as GenericDocument,
+    keys.privateKey,
+  );
 }
 
 export async function getAllDocuments(token: Token): Promise<DocumentsArray> {
-
   const keys = await loadKeys();
-    if (!keys) {
-      return Promise.reject("Could not load encryption keys");
-    }
+  if (!keys) {
+    return Promise.reject("Could not load encryption keys");
+  }
   const request = await fetch(`${API_URL}/documents/document_list`, {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -99,7 +110,7 @@ export async function getAllDocuments(token: Token): Promise<DocumentsArray> {
   });
 
   return ((await request.json()) as DocumentsArray).map((encryptedDocument) => {
-    return decryptDocument(encryptedDocument, keys.privateKey) 
+    return decryptDocument(encryptedDocument, keys.privateKey);
   });
 }
 
@@ -107,15 +118,12 @@ export function deleteDocument(token: Token, documentId: number): boolean {
   throw new Error("Not implemented");
 }
 
-export async function createDocument(
-  token: Token,
-  document: GenericDocument,
-) {
+export async function createDocument(token: Token, document: GenericDocument) {
   const keys = await loadKeys();
   if (!keys) {
     return Promise.reject("Could not load encryption keys");
   }
-  const encryptedDocument = encryptDocument(document, keys.publicKey)
+  const encryptedDocument = encryptDocument(document, keys.publicKey);
   const request = await fetch(
     `${API_URL}/documents/add/${document.documentType}`,
     {
@@ -140,7 +148,10 @@ export async function createDocument(
   }
 }
 
-export async function savePublicKey(publicKey: KeyPair["publicKey"], token: Token) {
+export async function savePublicKey(
+  publicKey: KeyPair["publicKey"],
+  token: Token,
+) {
   const request = await fetch(`${API_URL}/users/key`, {
     method: "POST",
     body: JSON.stringify({ publicKey: forge.pki.publicKeyToPem(publicKey) }),
@@ -154,12 +165,18 @@ export async function savePublicKey(publicKey: KeyPair["publicKey"], token: Toke
   }
 }
 
-export async function getRecipientPublicKey(recipient: String, token: Token): Promise<String>{
-  const request = await fetch(`${API_URL}/users/recipient/${recipient}/publicKey`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
+export async function getRecipientPublicKey(
+  recipient: String,
+  token: Token,
+): Promise<String> {
+  const request = await fetch(
+    `${API_URL}/users/recipient/${recipient}/publicKey`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     },
-  });
+  );
 
   if (!request.ok) {
     return Promise.reject("Failed to get recipient public key");

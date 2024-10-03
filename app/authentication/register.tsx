@@ -16,7 +16,7 @@ export default function RegisterScreen() {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
-  
+
   return (
     <Content>
       <View style={styles.container}>
@@ -57,11 +57,16 @@ export default function RegisterScreen() {
               textContentType="telephoneNumber"
             />
             <View style={{ alignItems: "center" }}>
-              <ButtonLarge label="Register" onPress={() => {
-                register(username, password, name, email, phoneNumber).then(() => {
-                  router.navigate("authentication/login");
-                }).catch();
-              }} />
+              <ButtonLarge
+                label="Register"
+                onPress={() => {
+                  register(username, password, name, email, phoneNumber)
+                    .then(() => {
+                      router.navigate("authentication/login");
+                    })
+                    .catch();
+                }}
+              />
             </View>
           </View>
         </KeyboardAwareScrollView>

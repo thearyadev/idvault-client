@@ -6,12 +6,16 @@ import { router } from "expo-router";
 export default function MyAccountScreen() {
   return (
     <Content>
-      <WhiteText style={{textAlign: "center", fontSize: 30, fontWeight: "bold"}}>My Account</WhiteText>
+      <WhiteText
+        style={{ textAlign: "center", fontSize: 30, fontWeight: "bold" }}
+      >
+        My Account
+      </WhiteText>
       <ButtonLarge
         label="Logout"
-        style={{width: "100%"}}
+        style={{ width: "100%" }}
         onPress={() => {
-          AsyncStorage.clear().catch()
+          AsyncStorage.clear().catch();
           router.navigate("authentication/login");
         }}
       />

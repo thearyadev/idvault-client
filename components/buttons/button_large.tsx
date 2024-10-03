@@ -11,7 +11,10 @@ export default function ButtonLarge({
   label?: string;
 }) {
   return (
-    <Pressable style={{...styles.btnStyle, ...(style as object)} } onPress={onPress}>
+    <Pressable
+      style={{ ...styles.btnStyle, ...(style as object) }}
+      onPress={onPress}
+    >
       <Text>{label}</Text>
     </Pressable>
   );

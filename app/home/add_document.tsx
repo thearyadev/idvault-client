@@ -2,7 +2,12 @@ import WhiteText from "components/text/white_text";
 import { useState } from "react";
 import Content from "components/wrappers/content";
 import { router, useLocalSearchParams } from "expo-router";
-import { BirthCertificate, DocTypes, DriversLicense, Passport } from "lib/types";
+import {
+  BirthCertificate,
+  DocTypes,
+  DriversLicense,
+  Passport,
+} from "lib/types";
 import { Button, ScrollViewBase, StyleSheet } from "react-native";
 import { TextInput, View } from "react-native";
 import DateTimePicker, {
@@ -19,11 +24,10 @@ type AddDocumentParams = {
   documentType: keyof typeof DocTypes;
 };
 
-
 const MOCK_DOCUMENTS: {
-Passport: Passport,
-BirthCertificate: BirthCertificate,
-DriversLicense: DriversLicense
+  Passport: Passport;
+  BirthCertificate: BirthCertificate;
+  DriversLicense: DriversLicense;
 } = {
   Passport: {
     documentId: 0,
@@ -33,8 +37,8 @@ DriversLicense: DriversLicense
     nationality: "Canadian",
     dateOfBirth: "1990-01-01",
     placeOfBirth: "Toronto",
-    authority: "Government of Canada"
-  }, 
+    authority: "Government of Canada",
+  },
   BirthCertificate: {
     documentId: 0,
     documentType: "BirthCertificate",
@@ -44,7 +48,7 @@ DriversLicense: DriversLicense
     dateOfRegistrtion: "1990-01-01",
     certificateNumber: "123456",
     sex: "Male",
-    registrationNumber: "198283123"
+    registrationNumber: "198283123",
   },
   DriversLicense: {
     documentId: 0,
@@ -57,15 +61,17 @@ DriversLicense: DriversLicense
     province: "Ontario",
     city: "Toronto",
     address: "123 Main St",
-    postalCode: "A1A 1A1"
+    postalCode: "A1A 1A1",
+  },
+};
 
-  }
-}
-
-function AddMockData(type: string){
+function AddMockData(type: string) {
   getToken().then((stored_token) => {
     if (stored_token) {
-      createDocument(stored_token, MOCK_DOCUMENTS[type as keyof typeof MOCK_DOCUMENTS])
+      createDocument(
+        stored_token,
+        MOCK_DOCUMENTS[type as keyof typeof MOCK_DOCUMENTS],
+      )
         .then(() => {
           router.navigate("/home/home");
         })
@@ -82,36 +88,39 @@ function PassportView() {
   return (
     <Content>
       <WhiteText>Add Document: Passport[FORM NOT IMPLEMENTED]</WhiteText>
-      <ButtonLarge 
+      <ButtonLarge
         label="Press to add mock data"
         onPress={() => AddMockData("Passport")}
       />
     </Content>
-  )
+  );
 }
 function BirthCertificateView() {
   return (
     <Content>
-      <WhiteText>Add Document: Birth Certificate[FORM NOT IMPLEMENTED]</WhiteText>
-      <ButtonLarge 
+      <WhiteText>
+        Add Document: Birth Certificate[FORM NOT IMPLEMENTED]
+      </WhiteText>
+      <ButtonLarge
         label="Press to add mock data"
         onPress={() => AddMockData("BirthCertificate")}
       />
     </Content>
-  )
+  );
 }
-
 
 function DriversLicenseView() {
   return (
     <Content>
-      <WhiteText>Add Document: Drivers License [FORM NOT IMPLEMENTED]</WhiteText>
-      <ButtonLarge 
+      <WhiteText>
+        Add Document: Drivers License [FORM NOT IMPLEMENTED]
+      </WhiteText>
+      <ButtonLarge
         label="Press to add mock data"
         onPress={() => AddMockData("DriversLicense")}
       />
     </Content>
-  )
+  );
 }
 // re-implement later
 // function DriversLicenseView() {
