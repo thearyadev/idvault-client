@@ -16,6 +16,14 @@ export async function setUsersName(name: string) {
   await AsyncStorage.setItem("name", name);
 }
 
+export async function getUsername() {
+  return await AsyncStorage.getItem("username");
+}
+
+export async function setUsername(username: string) {
+  await AsyncStorage.setItem("username", username);
+}
+
 export async function setPublicKey(publicKey: string, username: string) {
   await AsyncStorage.setItem("publicKey" + username, publicKey);
 }

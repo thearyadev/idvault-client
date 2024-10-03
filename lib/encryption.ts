@@ -1,5 +1,5 @@
 import { GenericDocument } from "./types";
-import { setPublicKey, getPublicKey, setPrivateKey, getPrivateKey } from "./asyncStorage";
+import { setPublicKey, getPublicKey, setPrivateKey, getPrivateKey, getUsername } from "./asyncStorage";
 import forge from "node-forge"
 
 export type KeyPair = ReturnType<typeof forge.pki.rsa.generateKeyPair>
@@ -13,12 +13,18 @@ export function saveKeys(keyPair: KeyPair, username: string): void {
   setPrivateKey(forge.pki.privateKeyToPem(keyPair.privateKey), username)
 }
 
-export async function loadKeys(username: string): Promise<KeyPair | null> {
+export async function loadKeys(): Promise<KeyPair | null> {
+  
+  const username = await getUsername()
+  if (!username) {
+    return null
+  }
   const publicKey = await getPublicKey(username)
   const privateKey = await getPrivateKey(username)
   if (!publicKey || !privateKey) {
     return null
   }
+
   return {
     publicKey: forge.pki.publicKeyFromPem(publicKey),
     privateKey: forge.pki.privateKeyFromPem(privateKey)
