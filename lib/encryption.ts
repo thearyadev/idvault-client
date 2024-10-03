@@ -8,14 +8,14 @@ export function generateEncryptionKeys(): KeyPair {
   return forge.pki.rsa.generateKeyPair({bits: 256, e: 0x10001})
 }
 
-export function saveKeys(keyPair: KeyPair): void {
-  setPublicKey(forge.pki.publicKeyToPem(keyPair.publicKey))
-  setPrivateKey(forge.pki.privateKeyToPem(keyPair.privateKey))
+export function saveKeys(keyPair: KeyPair, username: string): void {
+  setPublicKey(forge.pki.publicKeyToPem(keyPair.publicKey), username)
+  setPrivateKey(forge.pki.privateKeyToPem(keyPair.privateKey), username)
 }
 
-export async function loadKeys(): Promise<KeyPair | null> {
-  const publicKey = await getPublicKey()
-  const privateKey = await getPrivateKey()
+export async function loadKeys(username: string): Promise<KeyPair | null> {
+  const publicKey = await getPublicKey(username)
+  const privateKey = await getPrivateKey(username)
   if (!publicKey || !privateKey) {
     return null
   }
