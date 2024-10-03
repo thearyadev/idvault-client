@@ -22,6 +22,7 @@ export function saveKeys(keyPair: KeyPair, username: string): void {
 export async function loadKeys(): Promise<KeyPair | null> {
   const username = await getUsername();
   if (!username) {
+    console.log("No username provided");
     return null;
   }
   const publicKey = await getPublicKey(username);
@@ -66,6 +67,7 @@ export function decryptDocument<T extends GenericDocument>(
       }
       // @ts-ignore
       decryptedData[key] = decryptText(
+        // @ts-ignore
         forge.util.decode64(data[key]),
         privateKey,
       );
@@ -90,6 +92,8 @@ export function encryptDocument<T extends GenericDocument>(
       }
       // @ts-ignore
       encryptedData[key] = forge.util.encode64(
+
+        // @ts-ignore
         encryptText(data[key], publicKey),
       );
     }
