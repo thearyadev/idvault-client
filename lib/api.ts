@@ -153,3 +153,16 @@ export async function savePublicKey(publicKey: KeyPair["publicKey"], token: Toke
     return Promise.reject("Failed to save public key");
   }
 }
+
+export async function getRecipientPublicKey(recipient: String, token: Token): Promise<String>{
+  const request = await fetch(`${API_URL}/users/recipient/${recipient}/publicKey`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!request.ok) {
+    return Promise.reject("Failed to get recipient public key");
+  }
+  return (await request.json())["publicKey"];
+}
