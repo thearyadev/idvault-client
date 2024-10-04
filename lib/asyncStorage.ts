@@ -16,18 +16,32 @@ export async function setUsersName(name: string) {
   await AsyncStorage.setItem("name", name);
 }
 
-export async function setPublicKey(publicKey: string) {
-  await AsyncStorage.setItem("publicKey", publicKey);
+export async function getUsername() {
+  return await AsyncStorage.getItem("username");
 }
 
-export async function getPublicKey() {
-  return await AsyncStorage.getItem("publicKey");
+export async function setUsername(username: string) {
+  await AsyncStorage.setItem("username", username);
 }
 
-export async function setPrivateKey(privateKey: string) {
-  await AsyncStorage.setItem("privateKey", privateKey);
+export async function setPublicKey(publicKey: string, username: string) {
+  await AsyncStorage.setItem("publicKey" + username, publicKey);
 }
 
-export async function getPrivateKey() {
-  return await AsyncStorage.getItem("privateKey");
+export async function getPublicKey(username: string) {
+  return await AsyncStorage.getItem("publicKey" + username);
+}
+
+export async function setPrivateKey(privateKey: string, username: string) {
+  await AsyncStorage.setItem("privateKey" + username, privateKey);
+}
+
+export async function getPrivateKey(username: string) {
+  return await AsyncStorage.getItem("privateKey" + username);
+}
+
+export async function wipe() {
+  AsyncStorage.removeItem("username");
+  AsyncStorage.removeItem("token");
+  AsyncStorage.removeItem("name");
 }

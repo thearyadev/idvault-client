@@ -9,7 +9,14 @@ export default function LinkText({
   style?: StyleProp<TextStyle>;
   label?: string;
 }) {
-  return <Text style={{...styles.linkText, ... (style) as object}} onPress={onPress}>{label}</Text>;
+  return (
+    <Text
+      style={{ ...styles.linkText, ...(style as object) }}
+      onPress={onPress}
+    >
+      {label}
+    </Text>
+  );
 }
 
 const styles = StyleSheet.create({

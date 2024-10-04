@@ -14,7 +14,6 @@ import { getAllDocuments } from "lib/api";
 import { getToken } from "lib/asyncStorage";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-
 export default function AppHome() {
   const [name, setName] = useState("");
   const [documents, setDocuments] = useState<
@@ -150,5 +149,5 @@ const styles = StyleSheet.create({
     backgroundColor: "#10B3ED",
     marginTop: 5,
     marginBottom: 10,
-  }
+  },
 });

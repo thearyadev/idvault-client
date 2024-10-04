@@ -29,7 +29,10 @@ const NavbarItem: React.FC<NavbarItemProps> = ({
       <View
         style={[
           style.navbarItem,
-          { backgroundColor: isActive ? "#10B3ED" : undefined, borderRadius: 20 },
+          {
+            backgroundColor: isActive ? "#10B3ED" : undefined,
+            borderRadius: 20,
+          },
         ]}
       >
         {React.cloneElement(children as React.ReactElement<any>, {
@@ -54,7 +57,7 @@ const Navbar: React.FC = () => {
       <NavbarItem path="/home/home" iconName="home">
         <AntDesign />
       </NavbarItem>
-      <NavbarItem path="/home/search" iconName="search1">
+      <NavbarItem path="/home/sharing" iconName="sharealt">
         <AntDesign />
       </NavbarItem>
       <NavbarItem path="/home/my_account" iconName="account-cog-outline">

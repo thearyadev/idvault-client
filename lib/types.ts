@@ -1,6 +1,6 @@
-import {AntDesign} from "@expo/vector-icons";
-import {FontAwesome5} from "@expo/vector-icons";
-import {MaterialCommunityIcons} from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 export type UserDetails = {
   userId: number;
@@ -52,7 +52,6 @@ export type GenericDocument = Passport | DriversLicense | BirthCertificate;
 
 export type DocumentsArray = (Passport | DriversLicense | BirthCertificate)[];
 
-
 export const DocTypes = {
   Passport: {
     name: "Passport",
@@ -64,7 +63,7 @@ export const DocTypes = {
     iconName: "certificate",
     iconComponent: MaterialCommunityIcons,
   },
-  DriversLicense:{
+  DriversLicense: {
     name: "Drivers License",
     iconName: "car",
     iconComponent: AntDesign,
