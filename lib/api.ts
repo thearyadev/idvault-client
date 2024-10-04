@@ -121,12 +121,12 @@ export async function getAllDocuments(token: Token): Promise<DocumentsArray> {
     return decryptDocument(encryptedDocument, keys.privateKey).documentId;
   });
 
-  documents.filter((document) => {
+  const filteredDocuments = documents.filter((document) => {
     return !sharedDocuments.includes(document.documentId);
   }); // get all the documents that are not shared.
   // this is for the home screen, where the user sees only documents that they own.
 
-  return documents;
+  return filteredDocuments;
 }
 
 export function deleteDocument(token: Token, documentId: number): boolean {
