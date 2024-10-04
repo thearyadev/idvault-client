@@ -10,7 +10,6 @@ import Content from "components/wrappers/content";
 import { FontAwesome } from "@expo/vector-icons";
 import { generateEncryptionKeys, loadKeys, saveKeys } from "lib/encryption";
 import { savePublicKey } from "lib/api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function LoginScreen() {
   const [username, setUsername] = useState("");

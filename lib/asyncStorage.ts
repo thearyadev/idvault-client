@@ -26,7 +26,6 @@ export async function setUsername(username: string) {
 
 export async function setPublicKey(publicKey: string, username: string) {
   await AsyncStorage.setItem("publicKey" + username, publicKey);
-  console.log(await AsyncStorage.getAllKeys())
 }
 
 export async function getPublicKey(username: string) {

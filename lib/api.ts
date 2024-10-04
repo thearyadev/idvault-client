@@ -109,9 +109,20 @@ export async function getAllDocuments(token: Token): Promise<DocumentsArray> {
     },
   });
 
-  return ((await request.json()) as DocumentsArray).map((encryptedDocument) => {
+  const documents = ((await request.json()) as DocumentsArray).map((encryptedDocument) => {
     return decryptDocument(encryptedDocument, keys.privateKey);
   });
+
+  const sharedDocuments = (await getAllSharedDocuments(token) as DocumentsArray).map((encryptedDocument) => {
+    return decryptDocument(encryptedDocument, keys.privateKey).documentId;
+  });
+
+  documents.filter((document) => {
+    return !sharedDocuments.includes(document.documentId);
+  }); // get all the documents that are not shared.
+  // this is for the home screen, where the user sees only documents that they own. 
+
+  return documents; 
 }
 
 export function deleteDocument(token: Token, documentId: number): boolean {
@@ -182,4 +193,24 @@ export async function getRecipientPublicKey(
     return Promise.reject("Failed to get recipient public key");
   }
   return (await request.json())["publicKey"];
+}
+
+export async function getAllSharedDocuments(token: Token): Promise<DocumentsArray> {
+  const keys = await loadKeys();
+  if (!keys) {
+    return Promise.reject("Could not load encryption keys");
+  }
+  const request = await fetch(
+    `${API_URL}/documents/shared`,
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+
+  );
+  return decryptDocument(
+    (await request.json()),
+    keys.privateKey,
+  );
 }
