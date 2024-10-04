@@ -101,7 +101,6 @@ export function encryptDocument<T extends GenericDocument>(
       }
       // @ts-ignore
       encryptedData[key] = forge.util.encode64(
-
         // @ts-ignore
         encryptText(data[key], publicKey),
       );

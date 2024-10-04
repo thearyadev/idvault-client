@@ -29,7 +29,6 @@ export default function AppHome() {
       setName("Error");
     });
 
-
     // get all documents
     getToken().then((stored_token) => {
       if (stored_token) {

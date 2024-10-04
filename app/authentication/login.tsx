@@ -5,7 +5,12 @@ import { Redirect, router } from "expo-router";
 import { StyleSheet } from "react-native";
 import ButtonLarge from "components/buttons/button_large";
 import LinkText from "components/text/link";
-import { getToken, getUsername, setUsersName, setUsername as setUsernameStore} from "lib/asyncStorage";
+import {
+  getToken,
+  getUsername,
+  setUsersName,
+  setUsername as setUsernameStore,
+} from "lib/asyncStorage";
 import Content from "components/wrappers/content";
 import { FontAwesome } from "@expo/vector-icons";
 import { generateEncryptionKeys, loadKeys, saveKeys } from "lib/encryption";
