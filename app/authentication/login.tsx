@@ -15,12 +15,12 @@ import Content from "components/wrappers/content";
 import { FontAwesome } from "@expo/vector-icons";
 import { generateEncryptionKeys, loadKeys, saveKeys } from "lib/encryption";
 import { savePublicKey } from "lib/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [tokenAuth, setTokenAuth] = useState(false);
-
   useEffect(() => {
     getToken().then((stored_token) => {
       if (stored_token) {
@@ -38,8 +38,9 @@ export default function LoginScreen() {
         if (!keys) {
           const newKeys = generateEncryptionKeys();
           saveKeys(newKeys, username);
-          savePublicKey(newKeys.publicKey, stored_token!);
+          return
         }
+        savePublicKey(keys.publicKey, stored_token!);
       });
     });
     return <Redirect href="/home/home" />;
