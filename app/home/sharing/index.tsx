@@ -53,7 +53,7 @@ export default function SearchScreen() {
 
 
       <View>
-        <WhiteText>Documents Shard With You</WhiteText>
+        <WhiteText>Documents Shared With You</WhiteText>
         <View style={styles.container}>
           {sharedDocuments.map((document, index) => (
             <Button key={index}
