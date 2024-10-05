@@ -12,9 +12,9 @@ import BottomSheet, {
 } from "@devvie/bottom-sheet/src/index";
 import { useEffect, useRef, useState } from "react";
 import { GenericDocument, Token } from "lib/types";
-import { getToken } from "lib/asyncStorage";
+import { getToken, getUsername } from "lib/asyncStorage";
 import { createSharedDocument, getAllDocuments, getAllSharedDocuments} from "lib/api";
-
+import QRCode from 'react-native-qrcode-svg';
 export default function SearchScreen() {
   const sheetRef = useRef<BottomSheetMethods>(null);
   const [documents, setDocuments] = useState<GenericDocument[]>([]);
@@ -22,6 +22,7 @@ export default function SearchScreen() {
   const [recipient, setRecipient] = useState<string>("");
   const [token, setToken] = useState<Token>();
   const [sharedDocuments, setSharedDocuments] = useState<GenericDocument[]>([]);
+  const [username, setUsername] = useState<string>("");
 
   useEffect(() => {
     getToken().then((stored_token) => {
@@ -33,7 +34,10 @@ export default function SearchScreen() {
         getAllSharedDocuments(stored_token).then((documents) => {
           setSharedDocuments(documents);
         });
-        
+        getUsername().then((username) => {
+          setUsername(username!);
+        })
+
       }
     });
   }, []);
@@ -48,9 +52,16 @@ export default function SearchScreen() {
           sheetRef.current?.open();
         }}
       >
-        <Text style={styles.btnLabel}>Share a Document</Text>
+        <Text style={styles.btnLabel}>share a document</Text>
       </Pressable>
-
+      <Pressable
+        style={styles.btnStyle}
+        onPress={() => {
+          // Alert.alert("Your share code is: " + userShareCode)
+        }}
+      >
+        <Text style={styles.btnLabel}>view your share code</Text>
+      </Pressable>
 
       <View>
         <WhiteText>Documents Shared With You</WhiteText>
@@ -68,7 +79,10 @@ export default function SearchScreen() {
 
 
       </View>
-
+      
+      <QRCode 
+        value={username ? username : "username not found"}
+      />
 
 
 
