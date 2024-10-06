@@ -30,14 +30,14 @@ const NavbarItem: React.FC<NavbarItemProps> = ({
         style={[
           style.navbarItem,
           {
-            backgroundColor: isActive ? "#10B3ED" : undefined,
-            borderRadius: 20,
+            backgroundColor: isActive ? "#2b2bb3" : undefined,
+            borderRadius: 15,
           },
         ]}
       >
         {React.cloneElement(children as React.ReactElement<any>, {
           color: isActive ? "white" : "black",
-          size: 38,
+          size: 30,
           name: iconName,
         })}
       </View>
@@ -77,11 +77,9 @@ const style = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    height: 110,
+    height: 100,
     width: "100%",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 10,
+    paddingTop: 10,
     flexDirection: "row",
     justifyContent: "space-around",
   },
