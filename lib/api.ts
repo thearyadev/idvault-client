@@ -109,19 +109,23 @@ export async function getAllDocuments(token: Token): Promise<DocumentsArray> {
     },
   });
 
-  const documents = ((await request.json()) as DocumentsArray).map((encryptedDocument) => {
+  const documents = ((await request.json()) as DocumentsArray).map(
+    (encryptedDocument) => {
       return decryptDocument(encryptedDocument, keys.privateKey);
-  });
+    },
+  );
 
-  const sharedDocuments = (await getAllSharedDocuments(token)).map((doc) => doc.documentId);
+  const sharedDocuments = (await getAllSharedDocuments(token)).map(
+    (doc) => doc.documentId,
+  );
   console.log("shared documents", sharedDocuments);
 
   const filteredDocuments = documents.filter((document) => {
     return !sharedDocuments.includes(document.documentId);
   }); // get all the documents that are not shared.
-  // this is for the home screen, where the user sees only documents that they own. 
+  // this is for the home screen, where the user sees only documents that they own.
 
-  return filteredDocuments; 
+  return filteredDocuments;
 }
 
 export function deleteDocument(token: Token, documentId: number): boolean {
@@ -162,7 +166,7 @@ export async function savePublicKey(
   publicKey: KeyPair["publicKey"],
   token: Token,
 ) {
-  console.log("sending pk to server")
+  console.log("sending pk to server");
   const request = await fetch(`${API_URL}/users/key`, {
     method: "POST",
     body: JSON.stringify({ publicKey: forge.pki.publicKeyToPem(publicKey) }),
@@ -170,9 +174,9 @@ export async function savePublicKey(
       "Content-Type": "application/json",
       Authorization: `Bearer ${token}`,
     },
-  })
+  });
   if (!request.ok) {
-    console.log("FAILED TO SAVE PUBLIC KEY")
+    console.log("FAILED TO SAVE PUBLIC KEY");
     return Promise.reject("Failed to save public key");
   }
 }
@@ -196,26 +200,28 @@ export async function getRecipientPublicKey(
   return (await request.json())["publicKey"];
 }
 
-export async function getAllSharedDocuments(token: Token): Promise<DocumentsArray> {
+export async function getAllSharedDocuments(
+  token: Token,
+): Promise<DocumentsArray> {
   const keys = await loadKeys();
   if (!keys) {
     return Promise.reject("Could not load encryption keys");
   }
-  const request = await fetch(
-    `${API_URL}/documents/shared`,
-    {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
+  const request = await fetch(`${API_URL}/documents/shared`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
     },
-  );
+  });
   return (await request.json()).map((encryptedDocument: GenericDocument) => {
     return decryptDocument(encryptedDocument, keys.privateKey);
-  })
+  });
 }
 
-export async function createSharedDocument(document: GenericDocument, recipient: string, token: Token) {
-  
+export async function createSharedDocument(
+  document: GenericDocument,
+  recipient: string,
+  token: Token,
+) {
   const recipientPublicKey = await getRecipientPublicKey(recipient, token);
 
   const keyObj = forge.pki.publicKeyFromPem(recipientPublicKey);

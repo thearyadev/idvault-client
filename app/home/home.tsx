@@ -2,7 +2,12 @@ import { useEffect, useRef, useState } from "react";
 import { getUsersName } from "lib/asyncStorage";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import Content from "components/wrappers/content";
-import { BirthCertificate, DriversLicense, GenericDocument, Passport } from "lib/types";
+import {
+  BirthCertificate,
+  DriversLicense,
+  GenericDocument,
+  Passport,
+} from "lib/types";
 import ButtonSquareWithIcon from "components/buttons/button_square";
 import { AntDesign } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
@@ -16,7 +21,11 @@ import BottomSheet, { BottomSheetMethods } from "@devvie/bottom-sheet/src";
 import { bottomSheetStyles } from "components/styles/bottomSheetStyles";
 import { Link } from "expo-router";
 import { DocumentCard } from "components/buttons/document_card";
-import { PassportSheet, BirthCertificateSheet, DriversLicenceSheet } from "components/documentSheets/documentSheets";
+import {
+  PassportSheet,
+  BirthCertificateSheet,
+  DriversLicenceSheet,
+} from "components/documentSheets/documentSheets";
 
 export default function AppHome() {
   const [name, setName] = useState("");
@@ -30,7 +39,8 @@ export default function AppHome() {
   const birthCertificateSheetRef = useRef<BottomSheetMethods>(null);
   const driversLicenseSheetRef = useRef<BottomSheetMethods>(null);
 
-  const [currentDocument, setCurrentDocument] = useState<GenericDocument | null>(null);
+  const [currentDocument, setCurrentDocument] =
+    useState<GenericDocument | null>(null);
 
   useEffect(() => {
     getUsersName().then((stored_name) => {

@@ -4,7 +4,10 @@ import { BirthCertificate, DriversLicense, Passport } from "lib/types";
 import { ForwardedRef, RefObject, forwardRef } from "react";
 import { Text, View } from "react-native";
 
-const DocumentView = forwardRef<BottomSheetMethods, { children: React.ReactNode }>((props, ref: ForwardedRef<BottomSheetMethods>) => {
+const DocumentView = forwardRef<
+  BottomSheetMethods,
+  { children: React.ReactNode }
+>((props, ref: ForwardedRef<BottomSheetMethods>) => {
   return (
     <BottomSheet ref={ref} style={bottomSheetStyles.bottomSheet} height="90%">
       {props.children}
@@ -40,7 +43,6 @@ export function BirthCertificateSheet({
     </DocumentView>
   );
 }
-
 
 export function PassportSheet({
   document,
