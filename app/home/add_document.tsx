@@ -1,4 +1,3 @@
-import WhiteText from "components/text/white_text";
 import { useState } from "react";
 import Content from "components/wrappers/content";
 import { router, useLocalSearchParams } from "expo-router";
@@ -8,7 +7,7 @@ import {
   DriversLicense,
   Passport,
 } from "lib/types";
-import { Button, ScrollViewBase, StyleSheet } from "react-native";
+import { Button, ScrollViewBase, StyleSheet, Text } from "react-native";
 import { TextInput, View } from "react-native";
 import DateTimePicker, {
   DateTimePickerAndroid,
@@ -87,7 +86,7 @@ function AddMockData(type: string) {
 function PassportView() {
   return (
     <Content>
-      <WhiteText>Add Document: Passport[FORM NOT IMPLEMENTED]</WhiteText>
+      <Text>Add Document: Passport[FORM NOT IMPLEMENTED]</Text>
       <ButtonLarge
         label="Press to add mock data"
         onPress={() => AddMockData("Passport")}
@@ -98,9 +97,7 @@ function PassportView() {
 function BirthCertificateView() {
   return (
     <Content>
-      <WhiteText>
-        Add Document: Birth Certificate[FORM NOT IMPLEMENTED]
-      </WhiteText>
+      <Text>Add Document: Birth Certificate[FORM NOT IMPLEMENTED]</Text>
       <ButtonLarge
         label="Press to add mock data"
         onPress={() => AddMockData("BirthCertificate")}
@@ -112,9 +109,7 @@ function BirthCertificateView() {
 function DriversLicenseView() {
   return (
     <Content>
-      <WhiteText>
-        Add Document: Drivers License [FORM NOT IMPLEMENTED]
-      </WhiteText>
+      <Text>Add Document: Drivers License [FORM NOT IMPLEMENTED]</Text>
       <ButtonLarge
         label="Press to add mock data"
         onPress={() => AddMockData("DriversLicense")}
@@ -139,7 +134,7 @@ function DriversLicenseView() {
 //   if (Platform.OS === "android") {
 //     datePickers.push(
 //       <View>
-//         <WhiteText style={{ textAlign: "center" }}>Expiration Date</WhiteText>
+//         <Text style={{ textAlign: "center" }}>Expiration Date</Text>
 //         <ButtonLarge
 //           label={
 //             expirationDate
@@ -162,7 +157,7 @@ function DriversLicenseView() {
 //     );
 //     datePickers.push(
 //       <View>
-//         <WhiteText style={{ textAlign: "center" }}>Issue Date</WhiteText>
+//         <Text style={{ textAlign: "center" }}>Issue Date</Text>
 //         <ButtonLarge
 //           label={issueDate ? issueDate.toDateString() : "Select Issue Date"}
 //           onPress={() => {
@@ -181,7 +176,7 @@ function DriversLicenseView() {
 //     );
 //     datePickers.push(
 //       <View>
-//         <WhiteText style={{ textAlign: "center" }}>Date of Birth</WhiteText>
+//         <Text style={{ textAlign: "center" }}>Date of Birth</Text>
 //         <ButtonLarge
 //           label={
 //             dateOfBirth ? dateOfBirth.toDateString() : "Select Date of Birth"
@@ -205,7 +200,7 @@ function DriversLicenseView() {
 //   if (Platform.OS === "ios") {
 //     datePickers.push(
 //       <View>
-//         <WhiteText style={{ textAlign: "center" }}>Expiration Date</WhiteText>
+//         <Text style={{ textAlign: "center" }}>Expiration Date</Text>
 //         <DateTimePicker
 //           testID="dateTimePicker"
 //           value={expirationDate || new Date()}
@@ -218,7 +213,7 @@ function DriversLicenseView() {
 //     );
 //     datePickers.push(
 //       <View>
-//         <WhiteText style={{ textAlign: "center" }}>Issue Date</WhiteText>
+//         <Text style={{ textAlign: "center" }}>Issue Date</Text>
 //         <DateTimePicker
 //           testID="dateTimePicker"
 //           value={issueDate || new Date()}
@@ -231,7 +226,7 @@ function DriversLicenseView() {
 //     );
 //     datePickers.push(
 //       <View>
-//         <WhiteText style={{ textAlign: "center" }}>Date of Birth</WhiteText>
+//         <Text style={{ textAlign: "center" }}>Date of Birth</Text>
 //         <DateTimePicker
 //           testID="dateTimePicker"
 //           value={dateOfBirth || new Date()}
@@ -246,7 +241,7 @@ function DriversLicenseView() {
 
 //   return (
 //     <Content>
-//       <WhiteText style={styles.heading}>Add Drivers License</WhiteText>
+//       <Text style={styles.heading}>Add Drivers License</Text>
 
 //       <View style={styles.formContainer}>
 //         <TextInput
@@ -404,7 +399,7 @@ export default function AddDocument() {
   }
   return (
     <Content>
-      <WhiteText>Error: No document type selected</WhiteText>
+      <Text>Error: No document type selected</Text>
     </Content>
   );
 }

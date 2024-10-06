@@ -1,4 +1,4 @@
-import { Text, View, TextInput } from "react-native";
+import { Text, View, TextInput, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import { login, register, userDetails } from "lib/api";
 import { Redirect, router } from "expo-router";
@@ -9,6 +9,8 @@ import { getToken, setUsersName } from "lib/asyncStorage";
 import Content from "components/wrappers/content";
 import { FontAwesome } from "@expo/vector-icons";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import { inputStyle } from "components/styles/inputStyle";
+import { buttonStyle } from "components/styles/buttonStyle";
 
 export default function RegisterScreen() {
   const [username, setUsername] = useState("");
@@ -25,40 +27,40 @@ export default function RegisterScreen() {
             <TextInput
               placeholder="Username"
               onChangeText={setUsername}
-              style={styles.input}
+              style={{ ...inputStyle.input, marginBottom: 15 }}
               autoCapitalize="none"
               placeholderTextColor="black"
             />
             <TextInput
               placeholder="Password"
               onChangeText={setPassword}
-              style={styles.input}
+              style={{ ...inputStyle.input, marginBottom: 15 }}
               placeholderTextColor="black"
               secureTextEntry={true}
             />
             <TextInput
               placeholder="Name"
               onChangeText={setName}
-              style={styles.input}
+              style={{ ...inputStyle.input, marginBottom: 15 }}
               placeholderTextColor="black"
             />
             <TextInput
               placeholder="Email"
               onChangeText={setEmail}
-              style={styles.input}
+              style={{ ...inputStyle.input, marginBottom: 15 }}
               placeholderTextColor="black"
               textContentType="emailAddress"
             />
             <TextInput
               placeholder="Phone Number"
-              style={styles.input}
+              style={{ ...inputStyle.input, marginBottom: 15 }}
               onChangeText={setPhoneNumber}
               placeholderTextColor="black"
               textContentType="telephoneNumber"
             />
             <View style={{ alignItems: "center" }}>
-              <ButtonLarge
-                label="Register"
+              <Pressable
+                style={buttonStyle.buttonStyle}
                 onPress={() => {
                   register(username, password, name, email, phoneNumber)
                     .then(() => {
@@ -66,7 +68,9 @@ export default function RegisterScreen() {
                     })
                     .catch();
                 }}
-              />
+              >
+                <Text style={{ color: "white" }}>Register</Text>
+              </Pressable>
             </View>
           </View>
         </KeyboardAwareScrollView>
@@ -81,25 +85,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  input: {
-    height: 70,
-    marginTop: 10,
-    width: 300,
-    borderRadius: 10,
-    borderWidth: 1,
-    padding: 15,
-    backgroundColor: "white",
-    color: "black",
-  },
   inputContainer: {
     paddingBottom: 50,
+    width: 300,
   },
   forgotPassword: {
     textAlign: "right",
     paddingTop: 20,
     paddingRight: 10,
   },
-
   registerPrompt: {
     color: "white",
   },

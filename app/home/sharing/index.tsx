@@ -1,10 +1,7 @@
 import ButtonLarge from "components/buttons/button_large";
-import WhiteText from "components/text/white_text";
 import Content from "components/wrappers/content";
 import { router } from "expo-router";
-import { Link } from "expo-router";
 import { Alert, Button, Pressable, Text, TextInput, View } from "react-native";
-import ButtonSquareWithIcon from "components/buttons/button_square";
 import { StyleSheet } from "react-native";
 
 import BottomSheet, {
@@ -13,12 +10,17 @@ import BottomSheet, {
 import { useEffect, useRef, useState } from "react";
 import { GenericDocument, Token } from "lib/types";
 import { getToken, getUsername } from "lib/asyncStorage";
-import { createSharedDocument, getAllDocuments, getAllSharedDocuments} from "lib/api";
-import QRCode from 'react-native-qrcode-svg';
+import {
+  createSharedDocument,
+  getAllDocuments,
+  getAllSharedDocuments,
+} from "lib/api";
+import QRCode from "react-native-qrcode-svg";
 export default function SearchScreen() {
   const sheetRef = useRef<BottomSheetMethods>(null);
   const [documents, setDocuments] = useState<GenericDocument[]>([]);
-  const [selectedDocument, setSelectedDocument] = useState<GenericDocument | null>(null);
+  const [selectedDocument, setSelectedDocument] =
+    useState<GenericDocument | null>(null);
   const [recipient, setRecipient] = useState<string>("");
   const [token, setToken] = useState<Token>();
   const [sharedDocuments, setSharedDocuments] = useState<GenericDocument[]>([]);
@@ -36,15 +38,14 @@ export default function SearchScreen() {
         });
         getUsername().then((username) => {
           setUsername(username!);
-        })
-
+        });
       }
     });
   }, []);
 
   return (
     <Content>
-      <WhiteText>Sharing</WhiteText>
+      <Text>Sharing</Text>
       <Pressable
         style={styles.btnStyle}
         onPress={() => {
@@ -64,43 +65,36 @@ export default function SearchScreen() {
       </Pressable>
 
       <View>
-        <WhiteText>Documents Shared With You</WhiteText>
+        <Text>Documents Shared With You</Text>
         <View style={styles.container}>
           {sharedDocuments.map((document, index) => (
-            <Button key={index}
+            <Button
+              key={index}
               title={document.documentId.toString()}
               onPress={() => {
-                Alert.alert(`This is a shared document (id=${document.documentId}). View not implemented`)
+                Alert.alert(
+                  `This is a shared document (id=${document.documentId}). View not implemented`,
+                );
               }}
-            >
-            </Button>
+            ></Button>
           ))}
-          </View>
-
-
+        </View>
       </View>
-      
-      <QRCode 
-        value={username ? username : "username not found"}
-      />
 
-
-
+      <QRCode value={username ? username : "username not found"} />
 
       <BottomSheet ref={sheetRef}>
         <View style={{ padding: 15 }}>
           <Text>Select a Document to Share</Text>
           <View style={styles.container}>
             {documents.map((document, index) => (
-              <Button key={index}
+              <Button
+                key={index}
                 title={document.documentId.toString()}
                 onPress={() => {
                   setSelectedDocument(document);
                 }}
-              >
-
-
-              </Button>
+              ></Button>
             ))}
           </View>
           <TextInput
@@ -112,32 +106,28 @@ export default function SearchScreen() {
           <Button
             title="Share"
             onPress={() => {
-
               if (!selectedDocument) {
-
-                Alert.alert("A document was not selected")
+                Alert.alert("A document was not selected");
                 return;
               }
 
               if (!recipient) {
-                Alert.alert("A recipient was not entered")
+                Alert.alert("A recipient was not entered");
                 return;
               }
 
-               createSharedDocument(selectedDocument, recipient, token!).then(() => {
-                  Alert.alert("Document shared successfully")
-                  sheetRef.current?.close(); // make this a callback so the user presses OK then goes back home. 
-                  router.navigate("/home/home")
-               }).catch((error) => {
-               console.log(error)
-                  Alert.alert("Error sharing document")
-               })
-              
-
+              createSharedDocument(selectedDocument, recipient, token!)
+                .then(() => {
+                  Alert.alert("Document shared successfully");
+                  sheetRef.current?.close(); // make this a callback so the user presses OK then goes back home.
+                  router.navigate("/home/home");
+                })
+                .catch((error) => {
+                  console.log(error);
+                  Alert.alert("Error sharing document");
+                });
             }}
           />
-
-
         </View>
       </BottomSheet>
     </Content>
@@ -157,20 +147,20 @@ const styles = StyleSheet.create({
     paddingTop: 3,
   },
   container: {
-    flexDirection: 'row',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
+    flexDirection: "row",
+    justifyContent: "flex-start",
+    flexWrap: "wrap",
     padding: 10,
   },
   button: {
-    backgroundColor: '#007BFF',
+    backgroundColor: "#007BFF",
     borderRadius: 5,
     padding: 10,
     margin: 5,
   },
   buttonText: {
-    color: '#FFFFFF',
+    color: "#FFFFFF",
     fontSize: 16,
-    textAlign: 'center',
+    textAlign: "center",
   },
 });
