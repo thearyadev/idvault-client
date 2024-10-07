@@ -1,4 +1,3 @@
-import WhiteText from "components/text/white_text";
 import Content from "components/wrappers/content";
 import { useLocalSearchParams } from "expo-router";
 import { getDocument } from "lib/api";
@@ -12,7 +11,6 @@ import {
 import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { View, Text } from "react-native";
-import { DocTypes } from "lib/types";
 
 type ViewDocumentParams = {
   documentId: string;
@@ -26,7 +24,7 @@ export default function ViewDocument() {
   if (documentId === undefined) {
     return (
       <Content>
-        <WhiteText>Error: no doc id provided</WhiteText>
+        <Text>Error: no doc id provided</Text>
       </Content>
     );
   }
@@ -50,43 +48,37 @@ export default function ViewDocument() {
         }}
       >
         <View style={styles.imagePlaceholder}>
-          <WhiteText style={{ textAlign: "center" }}>Placeholder</WhiteText>
+          <Text style={{ textAlign: "center" }}>Placeholder</Text>
         </View>
 
-        <WhiteText style={{ fontSize: 25 }}>{doc?.documentType}</WhiteText>
+        <Text style={{ fontSize: 25 }}>{doc?.documentType}</Text>
 
         {doc?.documentType === "DriversLicense" && (
           <View>
-            <WhiteText>
+            <Text>
               Drivers License Number:{" "}
               {(doc as DriversLicense).driversLicenseNumber}
-            </WhiteText>
+            </Text>
 
-            <WhiteText>
-              Drivers License Class: {(doc as DriversLicense).class}
-            </WhiteText>
+            <Text>Drivers License Class: {(doc as DriversLicense).class}</Text>
           </View>
         )}
 
         {doc?.documentType === "Passport" && (
           <View>
-            <WhiteText>Nationality: {(doc as Passport).nationality}</WhiteText>
-            <WhiteText>Authority: {(doc as Passport).authority}</WhiteText>
+            <Text>Nationality: {(doc as Passport).nationality}</Text>
+            <Text>Authority: {(doc as Passport).authority}</Text>
           </View>
         )}
 
         {doc?.documentType === "BirthCertificate" && (
           <View>
-            <WhiteText>
-              Birth Place: {(doc as BirthCertificate).birthplace}
-            </WhiteText>
-            <WhiteText>
+            <Text>Birth Place: {(doc as BirthCertificate).birthplace}</Text>
+            <Text>
               Registration Number:{" "}
               {(doc as BirthCertificate).registrationNumber}
-            </WhiteText>
-            <WhiteText>
-              Date of Birth: {(doc as BirthCertificate).dateOfBirth}
-            </WhiteText>
+            </Text>
+            <Text>Date of Birth: {(doc as BirthCertificate).dateOfBirth}</Text>
           </View>
         )}
       </View>

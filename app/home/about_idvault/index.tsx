@@ -1,9 +1,9 @@
-import WhiteText from "components/text/white_text";
 import Content from "components/wrappers/content";
+import { Text } from "react-native";
 export default function AboutScreen() {
   return (
     <Content>
-      <WhiteText>About</WhiteText>
+      <Text>About</Text>
     </Content>
   );
 }

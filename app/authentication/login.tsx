@@ -1,4 +1,4 @@
-import { Text, View, TextInput } from "react-native";
+import { Text, View, TextInput, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import { getRecipientPublicKey, login, userDetails } from "lib/api";
 import { Redirect, router } from "expo-router";
@@ -15,12 +15,14 @@ import Content from "components/wrappers/content";
 import { FontAwesome } from "@expo/vector-icons";
 import { generateEncryptionKeys, loadKeys, saveKeys } from "lib/encryption";
 import { savePublicKey } from "lib/api";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { inputStyle } from "components/styles/inputStyle";
+import { buttonStyle } from "components/styles/buttonStyle";
 
 export default function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [tokenAuth, setTokenAuth] = useState(false);
+
   useEffect(() => {
     getToken().then((stored_token) => {
       if (stored_token) {
@@ -38,7 +40,7 @@ export default function LoginScreen() {
         if (!keys) {
           const newKeys = generateEncryptionKeys();
           saveKeys(newKeys, username);
-          return
+          return;
         }
         savePublicKey(keys.publicKey, stored_token!);
       });
@@ -49,42 +51,39 @@ export default function LoginScreen() {
     <Content>
       <View style={styles.container}>
         <View style={styles.iconContainer}>
-          <FontAwesome name="user-circle" size={130} color="white" />
+          <FontAwesome name="user-circle" size={130} color="#2b2bb3" />
         </View>
         <View style={styles.inputContainer}>
           <TextInput
             placeholder="Username"
             onChangeText={setUsername}
-            style={styles.input}
+            style={inputStyle.input}
             autoCapitalize="none"
-            placeholderTextColor="black"
+            placeholderTextColor="gray"
           />
           <TextInput
             secureTextEntry={true}
             placeholder="Password"
             onChangeText={setPassword}
-            style={styles.input}
-            placeholderTextColor="black"
+            style={{ ...inputStyle.input, marginTop: 20 }}
+            placeholderTextColor="gray"
           />
-          <LinkText
-            label="Forgot Password?"
-            style={styles.forgotPassword}
-            onPress={undefined} // go to password recovery
-          />
-        </View>
-        <ButtonLarge
-          label="Login"
-          onPress={() => {
-            login(username, password).then(() => {
-              getToken().then((stored_token) => {
-                userDetails(stored_token as string).then((user_details) => {
-                  setTokenAuth(true);
-                  setUsersName(user_details.name);
+          <Pressable
+            style={{ ...buttonStyle.buttonStyle, marginTop: 10 }}
+            onPress={() => {
+              login(username, password).then(() => {
+                getToken().then((stored_token) => {
+                  userDetails(stored_token as string).then((user_details) => {
+                    setTokenAuth(true);
+                    setUsersName(user_details.name);
+                  });
                 });
               });
-            });
-          }}
-        />
+            }}
+          >
+            <Text style={{ color: "white" }}>Login</Text>
+          </Pressable>
+        </View>
 
         <View style={styles.registerContainer}>
           <Text style={styles.registerPrompt}>New to IDVault?</Text>
@@ -107,18 +106,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  input: {
-    height: 70,
-    marginTop: 10,
-    width: 300,
-    borderRadius: 10,
-    borderWidth: 1,
-    padding: 15,
-    backgroundColor: "white",
-    color: "black",
-  },
   inputContainer: {
     paddingBottom: 50,
+    width: 300,
   },
   forgotPassword: {
     textAlign: "right",
@@ -127,10 +117,11 @@ const styles = StyleSheet.create({
   },
 
   registerPrompt: {
-    color: "white",
+    color: "black",
   },
   registerPromptLink: {
     paddingLeft: 5,
+    color: "#2b2bb3",
   },
   registerContainer: {
     flexDirection: "row",
