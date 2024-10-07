@@ -15,6 +15,7 @@ export type Token = string;
 export interface Document {
   documentId: number;
   documentType: string;
+  image: string; // b64
 }
 
 export interface Passport extends Document {

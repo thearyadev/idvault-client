@@ -11,6 +11,8 @@ import {
 import forge from "node-forge";
 import { userDetails } from "./api";
 
+const SKIP_KEYS = ["documentId", "documentType", "image"];
+
 export type KeyPair = ReturnType<typeof forge.pki.rsa.generateKeyPair>;
 
 export function generateEncryptionKeys(): KeyPair {
@@ -70,10 +72,12 @@ export function decryptDocument<T extends GenericDocument>(
 
   for (const key in data) {
     if (typeof data[key] === "string") {
-      if (key === "documentType") {
+      if (SKIP_KEYS.includes(key)) {
         decryptedData[key] = data[key];
         continue;
       }
+
+
       // @ts-ignore
       decryptedData[key] = decryptText(
         // @ts-ignore
@@ -95,7 +99,7 @@ export function encryptDocument<T extends GenericDocument>(
 
   for (const key in data) {
     if (typeof data[key] === "string") {
-      if (key === "documentType") {
+      if (SKIP_KEYS.includes(key)) {
         encryptedData[key] = data[key];
         continue;
       }
