@@ -165,7 +165,7 @@ export default function SearchScreen() {
             ))}
             <TextInput
               placeholder="Recpient Username"
-              onChangeText={setUsername}
+              onChangeText={setRecipient}
               style={inputStyle.input}
               autoCapitalize="none"
               placeholderTextColor="gray"
