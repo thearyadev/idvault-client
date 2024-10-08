@@ -45,6 +45,14 @@ export default function BaseLayout() {
             gestureEnabled: false,
           }}
         />
+        <Stack.Screen
+          name="home/camera"
+          options={{
+            headerShown: false,
+            gestureEnabled: false,
+          }}
+        />
+
 
         <Stack.Screen
           name="authentication/register"
