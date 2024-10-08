@@ -4,6 +4,7 @@ import { BirthCertificate, DocTypes, DriversLicense, GenericDocument, Passport }
 import { ForwardedRef, RefObject, forwardRef } from "react";
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
 import { AntDesign } from "@expo/vector-icons";
+import { buttonStyle } from "components/styles/buttonStyle";
 
 function Cell({ itemKey, value }: { itemKey: string, value?: string }) {
   return (
@@ -16,7 +17,7 @@ function Cell({ itemKey, value }: { itemKey: string, value?: string }) {
 
 const DocumentView = forwardRef<
   BottomSheetMethods,
-  { children: React.ReactNode, document: GenericDocument | null }
+  { children: React.ReactNode, document: GenericDocument | null, confirmationCallback?: () => void }
 >((props, ref: ForwardedRef<BottomSheetMethods>) => {
   const docData = DocTypes[props.document?.documentType as keyof typeof DocTypes] || null; // can be null if document is undefined. 
   // if document is undefined, then docData will be null.
@@ -35,13 +36,12 @@ const DocumentView = forwardRef<
           padding: 10,
           borderRadius: 20,
         }}
-        onPress={() => {
-          // @ts-ignore current is always applicable here. 
-          ref?.current?.close();
-        }}    
-
-      >
-        <AntDesign name="close" size={24} color="red" />
+          onPress={() => {
+            // @ts-ignore current is always applicable here. 
+            ref?.current?.close();
+          }}
+        >
+          <AntDesign name="close" size={24} color="red" />
 
         </Pressable>
       </View>
@@ -49,7 +49,13 @@ const DocumentView = forwardRef<
       <Cell itemKey="ID" value={props.document?.documentId.toString() || ""} />
 
       {props.children}
+      <View style={{ margin: 10, display: props.confirmationCallback ? "flex" : "none" }}>
 
+        <Pressable style={buttonStyle.buttonStyle} onPress={props.confirmationCallback}>
+          <Text style={{ color: "white" }}>Confirm</Text>
+        </Pressable>
+
+      </View>
     </BottomSheet>
   );
 });
@@ -57,12 +63,14 @@ const DocumentView = forwardRef<
 export function DriversLicenceSheet({
   document,
   sheetRef,
+  confirmationCallback
 }: {
   document: DriversLicense | null;
   sheetRef: RefObject<BottomSheetMethods>;
+  confirmationCallback?: () => void;
 }) {
   return (
-    <DocumentView ref={sheetRef} document={document}>
+    <DocumentView ref={sheetRef} document={document} confirmationCallback={confirmationCallback}>
       <Cell itemKey="class" value={document?.class} />
       <Cell itemKey="sex" value={document?.sex} />
       <Cell itemKey="height" value={document?.height} />
@@ -76,12 +84,14 @@ export function DriversLicenceSheet({
 export function BirthCertificateSheet({
   document,
   sheetRef,
+  confirmationCallback
 }: {
   document: BirthCertificate | null;
   sheetRef: RefObject<BottomSheetMethods>;
+  confirmationCallback?: () => void;
 }) {
   return (
-    <DocumentView ref={sheetRef} document={document}>
+    <DocumentView ref={sheetRef} document={document} confirmationCallback={confirmationCallback}>
       <Cell itemKey="name" value={document?.name} />
       <Cell itemKey="date of birth" value={document?.dateOfBirth} />
       <Cell itemKey="birthplace" value={document?.birthplace} />
@@ -94,12 +104,14 @@ export function BirthCertificateSheet({
 export function PassportSheet({
   document,
   sheetRef,
+  confirmationCallback
 }: {
   document: Passport | null;
   sheetRef: RefObject<BottomSheetMethods>;
+  confirmationCallback?: () => void;
 }) {
   return (
-    <DocumentView ref={sheetRef} document={document}>
+    <DocumentView ref={sheetRef} document={document} confirmationCallback={confirmationCallback}>
       <Cell itemKey="name" value={document?.name} />
       <Cell itemKey="type" value={document?.type} />
       <Cell itemKey="nationality" value={document?.nationality} />
