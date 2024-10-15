@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { ForwardedRef, RefObject, forwardRef, useRef, useState } from "react";
 import Content from "components/wrappers/content";
 import { router, useLocalSearchParams } from "expo-router";
 import {
@@ -23,9 +23,55 @@ import { Platform } from "react-native";
 import { MOCK_DOCUMENTS, DRIVERS_LICENSE_IMAGE, PASSPORT_IMAGE, BIRTH_CERTIFICATE_IMAGE } from "lib/mock";
 import { inputStyle } from "components/styles/inputStyle";
 import { buttonStyle } from "components/styles/buttonStyle";
+import { CameraView, CameraViewRef, useCameraPermissions } from "expo-camera";
+import { CameraCapturedPicture } from "expo-camera";
+import { BottomSheetMethods } from "@devvie/bottom-sheet/src";
+import { BirthCertificateSheet, DriversLicenceSheet, PassportSheet } from "components/documentSheets/documentSheets";
 type AddDocumentParams = {
   documentType: keyof typeof DocTypes;
 };
+
+interface CameraSelectionViewProps {
+  onPictureTaken: (picture: CameraCapturedPicture) => void;
+  visible: boolean;
+}
+
+const CameraSelectionView = forwardRef<CameraView, CameraSelectionViewProps>(
+  (props, ref: ForwardedRef<CameraView>) => {
+    const [permission, requestPermission] = useCameraPermissions();
+    if (!permission || !props.visible) {
+      return <View />;
+    }
+
+    if (!permission.granted) {
+      requestPermission();
+    }
+
+
+    return (
+      <View style={{ flex: 1, position: "absolute", top: 0, left: 0, right: 0, bottom: 0, zIndex: 9999 }}>
+        <CameraView ref={ref} facing="back" style={{ flex: 1 }}>
+          <View style={{ flex: 1, justifyContent: "flex-end", margin: 30 }}>
+
+            <Pressable style={buttonStyle.buttonStyle}
+              onPress={() => {
+                console.log("Capturing pic")
+
+                // @ts-ignore
+                ref.current?.takePictureAsync({ base64: true }).then((picture) => {
+                  props.onPictureTaken(picture)
+                })
+
+              }}>
+              <Text style={{ color: "white" }}>Capture</Text>
+            </Pressable>
+          </View>
+        </CameraView>
+      </View>
+    )
+  }
+);
+
 
 function validateInput(input: GenericDocument) {
   for (const key in input) {
@@ -75,70 +121,101 @@ function PassportView() {
   const [placeOfBirth, setPlaceOfBirth] = useState("");
   const [authority, setAuthority] = useState("");
   const [image, setImage] = useState("");
+
+  const [completedDocument, setCompletedDocument] = useState<Passport | null>(null);
+
+  const sheetRef = useRef<BottomSheetMethods>(null);
+
+  const cameraRef = useRef<CameraView>(null);
+  const [cameraVisible, setCameraVisible] = useState(false);
+  const onCaptureComplete = (picture: CameraCapturedPicture) => {
+    setCameraVisible(false)
+    setImage(picture.base64 || "")
+  }
   return (
-    <Content>
-      <Text style={styles.heading}>Passport</Text>
-      <TextInput
-        placeholder="Type"
-        onChangeText={setType}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
-        autoCapitalize="none"
-        placeholderTextColor="gray"
-      />
-      <TextInput
-        placeholder="Name"
-        onChangeText={setName}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
-        autoCapitalize="none"
-        placeholderTextColor="gray"
-      />
-      <TextInput
-        placeholder="Nationality"
-        onChangeText={setNationality}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
-        autoCapitalize="none"
-        placeholderTextColor="gray"
-      />
-      <TextInput
-        placeholder="Date of Birth"
-        onChangeText={setDateOfBirth}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
-        autoCapitalize="none"
-        placeholderTextColor="gray"
-      />
-      <TextInput
-        placeholder="Place of Birth"
-        onChangeText={setPlaceOfBirth}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
-        placeholderTextColor="gray"
-      />
-      <TextInput
-        placeholder="Authority"
-        onChangeText={setAuthority}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
-        autoCapitalize="none"
-        placeholderTextColor="gray"
-      />
-      <Pressable
-        style={{ ...buttonStyle.buttonStyle, marginTop: 10 }}
-        onPress={() => {
-          const newDocument: Passport = {
-            documentId: 0,
-            documentType: "Passport",
-            type: type,
-            name: name,
-            authority: authority,
-            dateOfBirth: dateOfBirth,
-            placeOfBirth: placeOfBirth,
-            image: image,
-            nationality: nationality
-          }
-          addDocument(newDocument)
-        }}
-      >
-        <Text style={{ color: "white" }}>Next</Text>
-      </Pressable>
-    </Content>
+    <>
+      <Content>
+
+        <CameraSelectionView ref={cameraRef} visible={cameraVisible} onPictureTaken={onCaptureComplete} />
+        <Text style={styles.heading}>Passport</Text>
+        <TextInput
+          placeholder="Type"
+          onChangeText={setType}
+          style={{ ...inputStyle.input, marginBottom: 10 }}
+          autoCapitalize="none"
+          placeholderTextColor="gray"
+        />
+        <TextInput
+          placeholder="Name"
+          onChangeText={setName}
+          style={{ ...inputStyle.input, marginBottom: 10 }}
+          autoCapitalize="none"
+          placeholderTextColor="gray"
+        />
+        <TextInput
+          placeholder="Nationality"
+          onChangeText={setNationality}
+          style={{ ...inputStyle.input, marginBottom: 10 }}
+          autoCapitalize="none"
+          placeholderTextColor="gray"
+        />
+        <TextInput
+          placeholder="Date of Birth"
+          onChangeText={setDateOfBirth}
+          style={{ ...inputStyle.input, marginBottom: 10 }}
+          autoCapitalize="none"
+          placeholderTextColor="gray"
+        />
+        <TextInput
+          placeholder="Place of Birth"
+          onChangeText={setPlaceOfBirth}
+          style={{ ...inputStyle.input, marginBottom: 10 }}
+          placeholderTextColor="gray"
+        />
+        <TextInput
+          placeholder="Authority"
+          onChangeText={setAuthority}
+          style={{ ...inputStyle.input, marginBottom: 10 }}
+          autoCapitalize="none"
+          placeholderTextColor="gray"
+        />
+        <Pressable
+          style={{ ...buttonStyle.buttonStyle, marginTop: 10 }}
+          onPress={() => {
+            setCameraVisible(true)
+          }}
+        >
+          <Text style={{ color: "white" }}>Capture Image</Text>
+        </Pressable>
+        <Pressable
+          style={{ ...buttonStyle.buttonStyle, marginTop: 10 }}
+          onPress={() => {
+            const newDocument: Passport = {
+              documentId: 0,
+              documentType: "Passport",
+              type: type,
+              name: name,
+              authority: authority,
+              dateOfBirth: dateOfBirth,
+              placeOfBirth: placeOfBirth,
+              image: image,
+              nationality: nationality
+            }
+            if (!validateInput(newDocument)) {
+              Alert.alert("Error", "Please fill out all fields")
+              return
+            }
+            setCompletedDocument(newDocument)
+            sheetRef.current?.open()
+          }}
+        >
+          <Text style={{ color: "white" }}>Submit</Text>
+        </Pressable>
+      </Content>
+      <PassportSheet sheetRef={sheetRef} document={completedDocument} confirmationCallback={() => {
+        addDocument(completedDocument!)
+      }} />
+    </>
   );
 }
 function BirthCertificateView() {
@@ -151,40 +228,52 @@ function BirthCertificateView() {
   const [registrationNumber, setRegistrationNumber] = useState("");
   const [image, setImage] = useState("");
 
+  const [completedDocument, setCompletedDocument] = useState<BirthCertificate | null>(null);
+
+  const sheetRef = useRef<BottomSheetMethods>(null);
+
+  const cameraRef = useRef<CameraView>(null);
+  const [cameraVisible, setCameraVisible] = useState(false);
+  const onCaptureComplete = (picture: CameraCapturedPicture) => {
+    setCameraVisible(false)
+    setImage(picture.base64 || "")
+  }
+
   return (
     <Content>
+      <CameraSelectionView ref={cameraRef} visible={cameraVisible} onPictureTaken={onCaptureComplete} />
       <Text style={styles.heading}>Birth Certificate</Text>
       <TextInput
         placeholder="Name"
         onChangeText={setName}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
+        style={{ ...inputStyle.input, marginBottom: 10 }}
         autoCapitalize="none"
         placeholderTextColor="gray"
       />
       <TextInput
         placeholder="Date of Birth"
         onChangeText={setDob}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
+        style={{ ...inputStyle.input, marginBottom: 10 }}
         autoCapitalize="none"
         placeholderTextColor="gray"
       />
       <TextInput
         placeholder="Birthplace"
         onChangeText={setBirthplace}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
+        style={{ ...inputStyle.input, marginBottom: 10 }}
         placeholderTextColor="gray"
       />
       <TextInput
         placeholder="Date of Registration"
         onChangeText={setDateOfRegistration}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
+        style={{ ...inputStyle.input, marginBottom: 10 }}
         autoCapitalize="none"
         placeholderTextColor="gray"
       />
       <TextInput
         placeholder="Certificate Number"
         onChangeText={setCertificateNumber}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
+        style={{ ...inputStyle.input, marginBottom: 10 }}
         autoCapitalize="none"
         placeholderTextColor="gray"
 
@@ -192,16 +281,25 @@ function BirthCertificateView() {
       <TextInput
         placeholder="Sex"
         onChangeText={setSex}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
+        style={{ ...inputStyle.input, marginBottom: 10 }}
         placeholderTextColor="gray"
       />
       <TextInput
         placeholder="Registration Number"
         onChangeText={setRegistrationNumber}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
+        style={{ ...inputStyle.input, marginBottom: 10 }}
         autoCapitalize="none"
         placeholderTextColor="gray"
       />
+      <Pressable
+        style={{ ...buttonStyle.buttonStyle, marginTop: 10 }}
+        onPress={() => {
+          setCameraVisible(true)
+        }}
+      >
+        <Text style={{ color: "white" }}>Capture Image</Text>
+      </Pressable>
+
       <Pressable
         style={{ ...buttonStyle.buttonStyle, marginTop: 10 }}
         onPress={() => {
@@ -217,12 +315,20 @@ function BirthCertificateView() {
             registrationNumber: registrationNumber,
             image: image,
           }
-          addDocument(newDocument)
+          if (!validateInput(newDocument)) {
+            Alert.alert("Error", "Please fill out all fields")
+            return
+          }
+          setCompletedDocument(newDocument)
+          sheetRef.current?.open()
 
         }}
       >
-      <Text style={{ color: "white" }}>Next</Text>
-    </Pressable>
+        <Text style={{ color: "white" }}>Next</Text>
+      </Pressable>
+      <BirthCertificateSheet sheetRef={sheetRef} document={completedDocument} confirmationCallback={() => {
+        addDocument(completedDocument!)
+      }} />
 
     </Content >
   );
@@ -240,60 +346,72 @@ function DriversLicenseView() {
   const [postalCode, setPostalCode] = useState("");
   const [image, setImage] = useState("");
 
+  const [completedDocument, setCompletedDocument] = useState<DriversLicense | null>(null);
+
+  const sheetRef = useRef<BottomSheetMethods>(null);
+
+  const cameraRef = useRef<CameraView>(null);
+  const [cameraVisible, setCameraVisible] = useState(false);
+  const onCaptureComplete = (picture: CameraCapturedPicture) => {
+    setCameraVisible(false)
+    setImage(picture.base64 || "")
+  }
   return (
     <Content>
+
+      <CameraSelectionView ref={cameraRef} visible={cameraVisible} onPictureTaken={onCaptureComplete} />
       <Text style={styles.heading}>Drivers License</Text>
       <TextInput
         placeholder="Drivers License Number"
         onChangeText={setDriversLicenseNumber}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
+        style={{ ...inputStyle.input, marginBottom: 10 }}
         autoCapitalize="none"
         placeholderTextColor="gray"
       />
       <TextInput
         placeholder="Date of Birth"
         onChangeText={setDateOfBirth}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
+        style={{ ...inputStyle.input, marginBottom: 10 }}
         autoCapitalize="none"
         placeholderTextColor="gray"
       />
       <TextInput
         placeholder="Class of License"
         onChangeText={setClassOfLicense}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
+        style={{ ...inputStyle.input, marginBottom: 10 }}
         placeholderTextColor="gray"
       />
       <TextInput
         placeholder="Height"
         onChangeText={setHeight}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
+        style={{ ...inputStyle.input, marginBottom: 10 }}
         autoCapitalize="none"
         placeholderTextColor="gray"
       />
       <TextInput
         placeholder="Sex"
         onChangeText={setSex}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
+        style={{ ...inputStyle.input, marginBottom: 10 }}
         placeholderTextColor="gray"
       />
       <TextInput
         placeholder="Province"
         onChangeText={setProvince}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
+        style={{ ...inputStyle.input, marginBottom: 10 }}
         autoCapitalize="none"
         placeholderTextColor="gray"
       />
       <TextInput
         placeholder="City"
         onChangeText={setCity}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
+        style={{ ...inputStyle.input, marginBottom: 10 }}
         autoCapitalize="none"
         placeholderTextColor="gray"
       />
       <TextInput
         placeholder="Address"
         onChangeText={setAddress}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
+        style={{ ...inputStyle.input, marginBottom: 10 }}
         autoCapitalize="none"
         placeholderTextColor="gray"
       />
@@ -301,10 +419,18 @@ function DriversLicenseView() {
       <TextInput
         placeholder="Postal Code"
         onChangeText={setPostalCode}
-        style={{ ...inputStyle.input, marginBottom: 15 }}
+        style={{ ...inputStyle.input, marginBottom: 10 }}
         autoCapitalize="none"
         placeholderTextColor="gray"
       />
+      <Pressable
+        style={{ ...buttonStyle.buttonStyle, marginTop: 10 }}
+        onPress={() => {
+          setCameraVisible(true)
+        }}
+      >
+        <Text style={{ color: "white" }}>Capture Image</Text>
+      </Pressable>
       <Pressable
         style={{ ...buttonStyle.buttonStyle, marginTop: 10 }}
         onPress={() => {
@@ -322,11 +448,20 @@ function DriversLicenseView() {
             postalCode: postalCode,
             image: image,
           }
-          addDocument(newDocument)
+          if (!validateInput(newDocument)) {
+            Alert.alert("Error", "Please fill out all fields")
+            return
+          }
+          setCompletedDocument(newDocument)
+          sheetRef.current?.open()
         }}
       >
         <Text style={{ color: "white" }}>Next</Text>
       </Pressable>
+
+      <DriversLicenceSheet sheetRef={sheetRef} document={completedDocument} confirmationCallback={() => {
+        addDocument(completedDocument!)
+      }} />
     </Content>
   );
 }

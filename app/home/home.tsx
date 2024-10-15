@@ -26,6 +26,7 @@ import {
   BirthCertificateSheet,
   DriversLicenceSheet,
 } from "components/documentSheets/documentSheets";
+import { router } from "expo-router";
 
 export default function AppHome() {
   const [name, setName] = useState("");
