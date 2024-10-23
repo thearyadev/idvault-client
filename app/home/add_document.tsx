@@ -1,4 +1,4 @@
-import { ForwardedRef, RefObject, forwardRef, useRef, useState } from "react";
+import { ForwardedRef, forwardRef, useRef, useState } from "react";
 import Content from "components/wrappers/content";
 import { router, useLocalSearchParams } from "expo-router";
 import {
@@ -10,29 +10,15 @@ import {
 } from "lib/types";
 import {
   Alert,
-  Button,
   Pressable,
-  ScrollViewBase,
   StyleSheet,
   Text,
 } from "react-native";
 import { TextInput, View } from "react-native";
-import DateTimePicker, {
-  DateTimePickerAndroid,
-} from "@react-native-community/datetimepicker";
-import RNPickerSelect from "react-native-picker-select";
-import { ScrollView } from "react-native-gesture-handler";
-import ButtonLarge from "components/buttons/button_large";
+import DateTimePicker from "@react-native-community/datetimepicker";
 import { createDocument } from "lib/api";
 import { getToken } from "lib/asyncStorage";
 import Toast from "react-native-root-toast";
-import { Platform } from "react-native";
-import {
-  MOCK_DOCUMENTS,
-  DRIVERS_LICENSE_IMAGE,
-  PASSPORT_IMAGE,
-  BIRTH_CERTIFICATE_IMAGE,
-} from "lib/mock";
 import { inputStyle } from "components/styles/inputStyle";
 import { buttonStyle } from "components/styles/buttonStyle";
 import { CameraView, CameraViewRef, useCameraPermissions } from "expo-camera";
@@ -43,9 +29,10 @@ import {
   DriversLicenceSheet,
   PassportSheet,
 } from "components/documentSheets/documentSheets";
-import RNDateTimePicker from "@react-native-community/datetimepicker";
+import * as ImageManipulator from "expo-image-manipulator";
 
 import * as Device from "expo-device";
+
 type AddDocumentParams = {
   documentType: keyof typeof DocTypes;
 };
@@ -53,6 +40,17 @@ type AddDocumentParams = {
 interface CameraSelectionViewProps {
   onPictureTaken: (picture: CameraCapturedPicture) => void;
   visible: boolean;
+}
+async function compressImageB64(b64_image: string): Promise<string>{
+  try {
+    const modified = await ImageManipulator.manipulateAsync(
+    `data:image/png;base64, ${b64_image}`,
+    [{resize: {width: 500}}],
+    {compress: 0.7, format: ImageManipulator.SaveFormat.JPEG, base64: true,})
+    return modified.base64 ?? ""
+  } catch {
+    return b64_image
+  }
 }
 
 const CameraSelectionView = forwardRef<CameraView, CameraSelectionViewProps>(
@@ -88,6 +86,7 @@ const CameraSelectionView = forwardRef<CameraView, CameraSelectionViewProps>(
                   // @ts-ignore
                   ref.current
                     ?.takePictureAsync({ base64: true })
+                  // @ts-ignore
                     .then((picture) => {
                       props.onPictureTaken(picture);
                     });
@@ -116,6 +115,7 @@ function validateInput(input: GenericDocument) {
     }
     // @ts-ignore
     if (input[key] === "") {
+      console.log(input[key])
       return false;
     }
   }
@@ -192,7 +192,9 @@ function PassportView() {
   const [cameraVisible, setCameraVisible] = useState(false);
   const onCaptureComplete = (picture: CameraCapturedPicture) => {
     setCameraVisible(false);
-    setImage(picture.base64 || "");
+    compressImageB64(picture.base64 ?? "").then((compressedImage) => {
+      setImage(compressedImage)
+    })
   };
   return (
     <>
@@ -305,7 +307,9 @@ function BirthCertificateView() {
   const [cameraVisible, setCameraVisible] = useState(false);
   const onCaptureComplete = (picture: CameraCapturedPicture) => {
     setCameraVisible(false);
-    setImage(picture.base64 || "");
+    compressImageB64(picture.base64 ?? "").then((compressedImageB64) => {
+      setImage(compressedImageB64)
+    })
   };
 
   return (
@@ -438,7 +442,9 @@ function DriversLicenseView() {
   const [cameraVisible, setCameraVisible] = useState(false);
   const onCaptureComplete = (picture: CameraCapturedPicture) => {
     setCameraVisible(false);
-    setImage(picture.base64 || "");
+    compressImageB64(picture.base64 ?? "").then((compressedImageB64) => {
+      setImage(compressedImageB64)
+    })
   };
   return (
     <Content>
