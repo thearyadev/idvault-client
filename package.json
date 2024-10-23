@@ -40,7 +40,8 @@
     "react-native-svg": "^15.7.1",
     "react-native-web": "~0.19.6",
     "expo-camera": "~15.0.16",
-    "expo-device": "~6.0.2"
+    "expo-device": "~6.0.2",
+    "expo-image-manipulator": "~12.0.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
