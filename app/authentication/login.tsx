@@ -1,4 +1,4 @@
-import { Text, View, TextInput, Pressable } from "react-native";
+import { Text, View, TextInput, Pressable, Alert } from "react-native";
 import React, { useEffect, useState } from "react";
 import { getRecipientPublicKey, login, userDetails } from "lib/api";
 import { Redirect, router } from "expo-router";
@@ -78,7 +78,9 @@ export default function LoginScreen() {
                     setUsersName(user_details.name);
                   });
                 });
-              });
+              }).catch(() => {
+                  Alert.alert("Couldn't log in.", "The username or password entered may be incorrect.")
+                });
             }}
           >
             <Text style={{ color: "white" }}>Login</Text>
