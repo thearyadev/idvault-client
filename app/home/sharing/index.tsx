@@ -1,4 +1,5 @@
 import ButtonLarge from "components/buttons/button_large";
+import {Picker} from '@react-native-picker/picker';
 import Content from "components/wrappers/content";
 import { router } from "expo-router";
 import { Alert, Button, Pressable, Text, TextInput, View } from "react-native";
@@ -34,6 +35,7 @@ import { ScrollView } from "react-native";
 import { DocumentCard } from "components/buttons/document_card";
 import { bottomSheetStyles } from "components/styles/bottomSheetStyles";
 import { inputStyle } from "components/styles/inputStyle";
+import DateTimePicker from "@react-native-community/datetimepicker"
 
 export default function SearchScreen() {
   const shareSheetRef = useRef<BottomSheetMethods>(null);
@@ -51,6 +53,7 @@ export default function SearchScreen() {
   const [username, setUsername] = useState<string>("");
   const [currentDocument, setCurrentDocument] =
     useState<GenericDocument | null>(null);
+  const [selectedExpiry, setSelectedExpiry] = useState("4")
 
   useEffect(() => {
     getToken().then((stored_token) => {
@@ -148,8 +151,8 @@ export default function SearchScreen() {
         </View>
       </BottomSheet>
 
-      <BottomSheet ref={shareSheetRef} style={bottomSheetStyles.bottomSheet}>
-        <View style={{ padding: 15 }}>
+      <BottomSheet ref={shareSheetRef} style={bottomSheetStyles.bottomSheet} height="80%">
+        <View style={{ padding: 0 }}>
           <Text style={{ fontSize: 18, textAlign: "center" }}>
             Select a Document to Share
           </Text>
@@ -171,6 +174,11 @@ export default function SearchScreen() {
               placeholderTextColor="gray"
             />
           </View>
+          <Picker selectedValue={selectedExpiry} onValueChange={setSelectedExpiry}>
+            {[1,2,3,4,5,6,7,8,9,10].map((hour) => {
+                return <Picker.Item label={`${hour} Hours`} value={hour.toString()} />
+            })}
+          </Picker> 
           <Pressable
             style={buttonStyle.buttonStyle}
             onPress={() => {
@@ -184,7 +192,7 @@ export default function SearchScreen() {
                 return;
               }
 
-              createSharedDocument(selectedDocument, recipient, token!)
+              createSharedDocument(selectedDocument, recipient, token!, selectedExpiry)
                 .then(() => {
                   Alert.alert("Document shared successfully");
                   shareSheetRef.current?.close(); // make this a callback so the user presses OK then goes back home.
@@ -258,21 +266,3 @@ const styles = StyleSheet.create({
   },
 });
 
-// <QRCode value={username ? username : "username not found"} />
-// <Pressable
-//   style={styles.btnStyle}
-//   onPress={() => {
-//     setSelectedDocument(null); // when user opens the bottom sheet, no document is selected
-//     sheetRef.current?.open();
-//   }}
-// >
-//   <Text style={styles.btnLabel}>share a document</Text>
-// </Pressable>
-// <Pressable
-//   style={styles.btnStyle}
-//   onPress={() => {
-//     // Alert.alert("Your share code is: " + userShareCode)
-//   }}
-// >
-//   <Text style={styles.btnLabel}>view your share code</Text>
-// </Pressable>

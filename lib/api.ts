@@ -221,6 +221,7 @@ export async function createSharedDocument(
   document: GenericDocument,
   recipient: string,
   token: Token,
+  hours: string
 ) {
   const recipientPublicKey = await getRecipientPublicKey(recipient, token);
 
@@ -229,7 +230,7 @@ export async function createSharedDocument(
   const encryptedDocument = encryptDocument(document, keyObj);
 
   const request = await fetch(
-    `${API_URL}/documents/share/${document.documentType}/${recipient}`,
+    `${API_URL}/documents/share/${document.documentType}/${recipient}/${hours}`,
     {
       method: "POST",
       body: JSON.stringify(encryptedDocument),

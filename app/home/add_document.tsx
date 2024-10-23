@@ -115,7 +115,6 @@ function validateInput(input: GenericDocument) {
     }
     // @ts-ignore
     if (input[key] === "") {
-      console.log(input[key])
       return false;
     }
   }
