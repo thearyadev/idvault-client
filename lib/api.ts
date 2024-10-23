@@ -17,7 +17,7 @@ import {
 } from "./encryption";
 import forge from "node-forge";
 
-const API_URL: string = "http://192.168.1.11";
+const API_URL: string = "http://192.168.1.31:9921";
 
 export async function login(
   username: string,

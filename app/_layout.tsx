@@ -53,7 +53,6 @@ export default function BaseLayout() {
           }}
         />
 
-
         <Stack.Screen
           name="authentication/register"
           options={{ presentation: "modal", headerShown: false }}

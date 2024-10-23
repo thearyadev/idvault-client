@@ -77,7 +77,6 @@ export function decryptDocument<T extends GenericDocument>(
         continue;
       }
 
-
       // @ts-ignore
       decryptedData[key] = decryptText(
         // @ts-ignore
